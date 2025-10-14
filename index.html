@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>CHEQUE DEPOSIT FORM</title>
+  <link rel="icon"
+        href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs"
+        type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Custom Tailwind Configuration for modern, professional Indigo colors and shadows
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                colors: {
+                    // NEW INDIGO PALETTE
+                    'primary-indigo': '#4F46E5', // Modern Indigo (Primary)
+                    'dark-indigo': '#3730A3',  // Darker Indigo for text
+                    'secondary-green': '#059669', // Emerald Green for Add/Success
+                    'upload-red': '#DC2626', // Bright Red for Upload/Warning
+                    'app-bg': '#F4F7F9', // Base light background (will be overwritten by gradient)
+                    'card-bg': '#ffffff',
+                    'input-bg': '#F9FAFB', // Subtle input background
+                },
+                boxShadow: {
+                    // Modern, softer shadow
+                    'xl': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', 
+                }
+            }
+        }
+    }
+  </script>
+
+  <style>
+    /* Base styles to apply Inter font */
+    body {
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+    }
+    /* Mandatory: UPPERCASE INPUT STYLES for specific fields */
+    input[type="text"],
+    textarea,
+    input[name*="chqNumber"],
+    input[name*="invoiceDetails"],
+    input[name*="remarks"],
+    input#otherBankName {
+      text-transform: uppercase;
+    }
+    /* Style for the select arrow - Updated SVG fill to new primary color */
+    select {
+        /* Remove default arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        /* Add custom arrow using background image (fill updated to primary-indigo hex) */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%234F46E5" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.86 0 1.32 1.013.754 1.658L8.753 11.14a.92.92 0 0 1-1.506 0z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        padding-right: 2rem;
+    }
+
+    /* Table Specific Styles for better sticky header */
+    .table-container {
+        max-height: 400px; 
+        overflow-y: auto;
+        border-radius: 0.75rem; 
+        border: 1px solid #E5E7EB; 
+    }
+    /* Increased TH padding for better spacing */
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1); 
+      padding-top: 1rem; /* p-4 */
+      padding-bottom: 1rem; /* p-4 */
+    }
+    /* Align value input to the right and highlight - Updated colors */
+    .item-row input[name*="chqValue"] {
+      text-align: right;
+      font-weight: 600; 
+      color: #DC2626; /* upload-red */
+      background: #FEF2F2; /* Light red background */
+    }
+    /* Updated input padding in table for less congestion */
+    .item-row input, .item-row select {
+        padding-top: 0.5rem; 
+        padding-bottom: 0.5rem;
+        border-radius: 0.5rem; 
+        transition: border-color 0.2s, box-shadow 0.2s;
+        /* Add a subtle focus ring to table inputs as well */
+        --tw-ring-color: #4F46E5;
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    }
+    /* Decongested table cell padding */
+    .item-row td {
+        padding: 0.5rem; /* p-2 for all table data cells */
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-8 min-h-screen font-sans antialiased">
+  
+  <div class="container mx-auto">
+    <div class="bg-card-bg shadow-xl rounded-2xl p-6 sm:p-10 max-w-6xl mx-auto"> 
+      
+      <h1 class="text-3xl font-extrabold text-dark-indigo border-b-2 border-primary-indigo/30 pb-4 mb-8 flex items-center justify-center tracking-wider">
+          <img src="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" 
+               alt="Pristine Pearl Pharma Logo" 
+               class="h-10 w-auto mr-4 rounded-full p-0.5 bg-gray-50 transition duration-300 hover:scale-105">
+          PALEPU PHARMA DISTRIBUTORS (SS)
+      </h1>
+
+      <div class="p-5 border border-gray-100 rounded-xl bg-gray-50/50 mb-8 space-y-6">
+          
+          <h2 class="text-md font-semibold text-primary-indigo border-b border-primary-indigo/30 pb-2 uppercase tracking-wider">Deposit Details</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"> 
+            
+            <div class="input-group">
+              <label for="receivedFrom" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Received From</label>
+              <input id="receivedFrom" type="text" value="" required 
+                     list="receivedFromNames"
+                     class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+            </div>
+            
+            <div class="input-group">
+              <label for="receivedDate" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Received Date</label>
+              <input id="receivedDate" type="date" value="" required
+                     class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+            </div>
+            
+            <div class="input-group">
+              <label for="state" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">State</label>
+              <select id="state" required
+                      class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+                <option value="" disabled selected class="text-gray-400">-- SELECT STATE --</option>
+                <option value="TN1">TN1</option>
+                <option value="TN2">TN2</option>
+                <option value="KL">KL</option>
+                <option value="KA">KA</option>
+                <option value="JK">JK</option>
+                <option value="GOA">GOA</option>
+              </select>
+            </div>
+          </div>
+
+          <h2 class="text-md font-semibold text-primary-indigo border-b border-primary-indigo/30 pb-2 pt-4 uppercase tracking-wider">Party & Bank Details</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+            
+            <div class="input-group">
+              <label for="partyName" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Party Name</label>
+              <input id="partyName" type="text" value="" required
+                     list="partyNames"
+                     class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+            </div>
+            
+            <div class="input-group">
+              <label for="bankName" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Party Bank Name</label>
+              <select id="bankName" required
+                      class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+                </select>
+              <input id="otherBankName" type="text" placeholder="ENTER BANK NAME" style="display: none;"
+                     class="w-full mt-2 py-2 px-3 border border-gray-500 rounded-lg bg-white focus:ring-2 focus:ring-secondary-green focus:border-secondary-green transition duration-200 text-sm">
+            </div>
+            
+            <div class="input-group">
+              <label for="branch" class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Branch</label>
+              <input id="branch" type="text" value="" required
+                     class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
+            </div>
+
+          </div>
+          
+          <datalist id="partyNames">
+            </datalist> 
+            <datalist id="receivedFromNames">
+            </datalist> 
+
+      </div>
+
+      <h2 class="text-lg font-bold text-dark-indigo border-b border-gray-200 pb-2 mb-4 mt-6 uppercase tracking-wider">Cheque Details</h2>
+
+      <div class="table-container shadow-lg">
+          <table class="min-w-full">
+            <thead class="bg-primary-indigo text-white"> 
+              <tr>
+                <th style="width: 3%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">#</th>
+                <th style="width: 10%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Chq Date</th>
+                <th style="width: 13%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Chq Number</th>
+                <th style="width: 12%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Chq Value (₹)</th>
+                <th style="width: 13%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Deposited Bank</th>
+                <th style="width: 10%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Deposited Date</th>
+                <th style="width: 20%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Invoice Details</th>
+                <th style="width: 15%;" class="p-4 text-left text-xs font-semibold uppercase tracking-wider">Remarks</th>
+                <th style="width: 4%;" class="p-4 text-center text-xs font-semibold uppercase tracking-wider">Action</th>
+              </tr>
+            </thead>
+            <tbody id="itemsTable" class="divide-y divide-gray-200 bg-white">
+            </tbody>
+          </table>
+      </div>
+
+      <div class="total-value-container flex justify-end items-center bg-gray-50 p-4 border-t-2 border-primary-indigo/50 rounded-b-lg shadow-inner">
+          <span class="text-lg font-bold text-dark-indigo uppercase tracking-wider">TOTAL CHEQUE VALUE:</span> 
+          <strong id="totalValueDisplay" class="text-2xl font-extrabold text-upload-red ml-4">₹ 0.00</strong>
+      </div>
+
+      <div class="actions flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0">
+        
+        <div class="left-actions flex gap-4">
+          <button id="addRowBtn" type="button" 
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-secondary-green hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-secondary-green/50">
+            <i class="fa-solid fa-plus"></i> Add Cheque Row
+          </button>
+        </div>
+        
+        <div class="right-actions flex items-center gap-4">
+          <button id="reportBtn" type="button" 
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-primary-indigo hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-primary-indigo/50">
+            <i class="fa-solid fa-file-lines"></i> View Report
+          </button>
+          
+          <button id="modifyBtn" type="button" 
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-dark-indigo hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-dark-indigo/50">
+            <i class="fa-solid fa-pen-to-square"></i> Modify
+          </button>
+          <span id="statusMessage" class="status-message text-sm font-medium text-secondary-green"></span>
+          <button id="submitToSheet" type="button" 
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-upload-red hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-upload-red/50">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden transition-opacity duration-300 flex items-center justify-center opacity-0" aria-modal="true" role="dialog">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-11/12 max-w-sm transform transition-transform duration-300 scale-95">
+      <h3 id="modalTitle" class="text-xl font-bold mb-4 text-dark-indigo">Notification</h3>
+      <p id="modalBody" class="text-gray-600 mb-6"></p>
+
+      <div id="passwordGroup" class="mb-6 hidden">
+          <label for="modalPassword" class="block text-sm font-medium text-gray-700 mb-2">Report Password:</label>
+          <input type="password" id="modalPassword" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-150" placeholder="Enter password" autocomplete="off">
+      </div>
+      
+      <div class="flex justify-end space-x-3">
+          <button id="modalCloseBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150 font-medium">Close</button>
+          <button id="modalConfirmBtn" class="px-4 py-2 bg-primary-indigo text-white rounded-lg hover:bg-primary-indigo/90 transition duration-150 hidden font-medium">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ----------------------------------------------------------------------
+    // --- 1. CONFIGURATION (UPDATE THIS) -----------------------------------
+    // ----------------------------------------------------------------------
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx411lcUBT9oV5WpeFuwlvJ7mAxvh0AGYUnpO3zIo7XHlIB9T_h7gDCdfs_7XSs90yp/exec';
+    const SECRET_PASSWORD = 'pearl#chq'; // ⭐ Report password
+
+    // --- BANK OPTIONS ARRAY (Used only for the HEADER Bank Name) ---
+    const BANK_OPTIONS_RAW = [
+        { value: "AB Bank Ltd.", text: "AB Bank Ltd." },
+        { value: "Airtel Payments Bank Ltd", text: "Airtel Payments Bank Ltd" },
+        { value: "American Express Banking Corporation", text: "American Express Banking Corporation" },
+        { value: "Andhra Pradesh Grameena Vikas Bank", text: "Andhra Pradesh Grameena Vikas Bank" },
+        { value: "Andhra Pragathi Grameena Bank", text: "Andhra Pragathi Grameena Bank" },
+        { value: "Arunachal Pradesh Rural Bank", text: "Arunachal Pradesh Rural Bank" },
+        { value: "Aryavart Bank", text: "Aryavart Bank" },
+        { value: "Assam Gramin Vikash Bank", text: "Assam Gramin Vikash Bank" },
+        { value: "Au Small Finance Bank Ltd.","text": "Au Small Finance Bank Ltd." },
+        { value: "Australia and New Zealand Banking Group Ltd.", text: "Australia and New Zealand Banking Group Ltd." },
+        { value: "Axis Bank Ltd.", text: "Axis Bank Ltd." },
+        { value: "Bandhan Bank Ltd.", text: "Bandhan Bank Ltd." },
+        { value: "Bangiya Gramin Vikash Bank", text: "Bangiya Gramin Vikash Bank" },
+        { value: "Bank of America", text: "Bank of America" },
+        { value: "Bank of Bahrain and Kuwait B.S.C.", text: "Bank of Bahrain and Kuwait B.S.C." },
+        { value: "Bank of Baroda", text: "Bank of Baroda" },
+        { value: "Bank of Ceylon", text: "Bank of Ceylon" },
+        { value: "Bank of China Limited", text: "Bank of China Limited" },
+        { value: "Bank of India", text: "Bank of India" },
+        { value: "Bank of Maharashtra", text: "Bank of Maharashtra" },
+        { value: "Bank of Nova Scotia", text: "Bank of Nova Scotia" },
+        { value: "Barclays Bank Plc.", text: "Barclays Bank Plc." },
+        { value: "Baroda Gujarat Gramin Bank", text: "Baroda Gujarat Gramin Bank" },
+        { value: "Baroda Rajasthan Kshetriya Gramin Bank", text: "Baroda Rajasthan Kshetriya Gramin Bank" },
+        { value: "Baroda UP Bank", text: "Baroda UP Bank" },
+        { value: "BNP Paribas", text: "BNP Paribas" },
+        { value: "Canara Bank", text: "Canara Bank" },
+        { value: "Capital Small Finance Bank Ltd", text: "Capital Small Finance Bank Ltd" },
+        { value: "Central Bank of India", text: "Central Bank of India" },
+        { value: "Chaitanya Godavari GB", text: "Chaitanya Godavari GB" },
+        { value: "Chhattisgarh Rajya Gramin Bank", text: "Chhattisgarh Rajya Gramin Bank" },
+        { value: "Citibank N.A.", text: "Citibank N.A." },
+        { value: "City Union Bank Ltd.", text: "City Union Bank Ltd." },
+        { value: "Coastal Local Area Bank Ltd", text: "Coastal Local Area Bank Ltd" },
+        { value: "Cooperatieve Rabobank U.A./ Coöperatieve Centrale Raiffeisen-Boerenleenbank B.A.", text: "Cooperatieve Rabobank U.A./ Coöperatieve Centrale Raiffeisen-Boerenleenbank B.A." },
+        { value: "Credit Agricole Corporate and Investment Bank", text: "Credit Agricole Corporate and Investment Bank" },
+        { value: "CSB Bank Limited", text: "CSB Bank Limited" },
+        { value: "CTBC Bank Co., Ltd.", text: "CTBC Bank Co., Ltd." },
+        { value: "Dakshin Bihar Gramin Bank", text: "Dakshin Bihar Gramin Bank" },
+        { value: "DBS Bank India Limited", text: "DBS Bank India Limited" },
+        { value: "DCB Bank Ltd.", text: "DCB Bank Ltd." },
+        { value: "Deutsche Bank A.G.", text: "Deutsche Bank A.G." },
+        { value: "Dhanlaxmi Bank Ltd.", text: "Dhanlaxmi Bank Ltd." },
+        { value: "Doha Bank Q.P.S.C", text: "Doha Bank Q.P.S.C" },
+        { value: "Ellaquai Dehati Bank", text: "Ellaquai Dehati Bank" },
+        { value: "Emirates NBD Bank P.J.S.C", text: "Emirates NBD Bank P.J.S.C" },
+        { value: "Equitas Small Finance Bank Ltd", text: "Equitas Small Finance Bank Ltd" },
+        { value: "ESAF Small Finance Bank Ltd.", text: "ESAF Small Finance Bank Ltd." },
+        { value: "Export-Import Bank of India", text: "Export-Import Bank of India" },
+        { value: "Federal Bank Ltd.", text: "Federal Bank Ltd." },
+        { value: "FINO Payments Bank Ltd", text: "FINO Payments Bank Ltd" },
+        { value: "First Abu Dhabi Bank PJSC", text: "First Abu Dhabi Bank PJSC" },
+        { value: "FirstRand Bank Limited", text: "FirstRand Bank Limited" },
+        { value: "HDFC Bank Ltd", text: "HDFC Bank Ltd" },
+        { value: "Himachal Pradesh Gramin Bank", text: "Himachal Pradesh Gramin Bank" },
+        { value: "Hong Kong and Shanghai Banking Corporation Limited", text: "Hong Kong and Shanghai Banking Corporation Limited" },
+        { value: "ICICI Bank Ltd.", text: "ICICI Bank Ltd." },
+        { value: "IDBI Bank Limited", text: "IDBI Bank Limited" },
+        { value: "IDFC FIRST Bank Limited", text: "IDFC FIRST Bank Limited" },
+        { value: "India Post Payments Bank Ltd", text: "India Post Payments Bank Ltd" },
+        { value: "Indian Bank", text: "Indian Bank" },
+        { value: "Indian Overseas Bank", text: "Indian Overseas Bank" },
+        { value: "IndusInd Bank Ltd", text: "IndusInd Bank Ltd" },
+        { value: "Industrial and Commercial Bank of China", text: "Industrial and Commercial Bank of China" },
+        { value: "Industrial Bank of Korea", text: "Industrial Bank of Korea" },
+        { value: "J&K Grameen Bank", text: "J&K Grameen Bank" },
+        { value: "J.P. Morgan Chase Bank N.A.", text: "J.P. Morgan Chase Bank N.A." },
+        { value: "Jammu & Kashmir Bank Ltd.", text: "Jammu & Kashmir Bank Ltd." },
+        { value: "Jana Small Finance Bank Ltd", text: "Jana Small Finance Bank Ltd" },
+        { value: "Jharkhand Rajya Gramin Bank", text: "Jharkhand Rajya Gramin Bank" },
+        { value: "Jio Payments Bank Ltd", text: "Jio Payments Bank Ltd" },
+        { value: "JSC VTB Bank", text: "JSC VTB Bank" },
+        { value: "Karnataka Bank Ltd.", text: "Karnataka Bank Ltd." },
+        { value: "Karnataka Gramin Bank", text: "Karnataka Gramin Bank" },
+        { value: "Karnataka Vikas Gramin Bank", text: "Karnataka Vikas Gramin Bank" },
+        { value: "Karur Vysya Bank Ltd.", text: "Karur Vysya Bank Ltd." },
+        { value: "KEB Hana Bank", text: "KEB Hana Bank" },
+        { value: "Kerala Gramin Bank", text: "Kerala Gramin Bank" },
+        { value: "Kookmin Bank", text: "Kookmin Bank" },
+        { value: "Kotak Mahindra Bank Ltd", text: "Kotak Mahindra Bank Ltd" },
+        { value: "Krishna Bhima Samruddhi LAB Ltd", text: "Krishna Bhima Samruddhi LAB Ltd" },
+        { value: "Madhya Pradesh Gramin Bank", text: "Madhya Pradesh Gramin Bank" },
+        { value: "Madhyanchal Gramin Bank", text: "Madhyanchal Gramin Bank" },
+        { value: "Maharashtra Gramin Bank", text: "Maharashtra Gramin Bank" },
+        { value: "Manipur Rural Bank", text: "Manipur Rural Bank" },
+        { value: "Mashreq bank P.S.C", text: "Mashreq bank P.S.C" },
+        { value: "Meghalaya Rural Bank", text: "Meghalaya Rural Bank" },
+        { value: "Mizoram Rural Bank", text: "Mizoram Rural Bank" },
+        { value: "Mizuho Bank Ltd.", text: "Mizuho Bank Ltd." },
+        { value: "MUFG Bank, Ltd.", text: "MUFG Bank, Ltd." },
+        { value: "Nagaland Rural Bank", text: "Nagaland Rural Bank" },
+        { value: "Nainital bank Ltd.", text: "Nainital bank Ltd." },
+        { value: "NABARD", text: "NABARD" },
+        { value: "National Housing Bank", text: "National Housing Bank" },
+        { value: "NatWest Markets Plc", text: "NatWest Markets Plc" },
+        { value: "Nong Hyup Bank", text: "Nong Hyup Bank" },
+        { value: "NSDL Payments Bank Limited", text: "NSDL Payments Bank Limited" },
+        { value: "Odisha Gramya Bank", text: "Odisha Gramya Bank" },
+        { value: "Paschim Banga Gramin Bank", text: "Paschim Banga Gramin Bank" },
+        { value: "Paytm Payments Bank Ltd", text: "Paytm Payments Bank Ltd" },
+        { value: "Prathama U.P. Gramin Bank", text: "Prathama U.P. Gramin Bank" },
+        { value: "PT Bank Maybank Indonesia TBK", text: "PT Bank Maybank Indonesia TBK" },
+        { value: "Puduvai Bharathiar Grama Bank", text: "Puduvai Bharathiar Grama Bank" },
+        { value: "Punjab & Sind Bank", text: "Punjab & Sind Bank" },
+        { value: "Punjab Gramin Bank", text: "Punjab Gramin Bank" },
+        { value: "Punjab National Bank", text: "Punjab National Bank" },
+        { value: "Qatar National Bank", text: "Qatar National Bank" },
+        { value: "Rajasthan Marudhara Gramin Bank", text: "Rajasthan Marudhara Gramin Bank" },
+        { value: "RBL Bank Ltd.", text: "RBL Bank Ltd." },
+        { value: "Saptagiri Grameena Bank", text: "Saptagiri Grameena Bank" },
+        { value: "Sarva Haryana Gramin Bank", text: "Sarva Haryana Gramin Bank" },
+        { value: "Saurashtra Gramin Bank", text: "Saurashtra Gramin Bank" },
+        { value: "Sberbank", text: "Sberbank" },
+        { value: "SBM Bank (India) Limited", text: "SBM Bank (India) Limited" },
+        { value: "Shinhan Bank", text: "Shinhan Bank" },
+        { value: "Shivalik Small Finance Bank Ltd", text: "Shivalik Small Finance Bank Ltd" },
+        { value: "slice Small Finance Bank Ltd.", text: "slice Small Finance Bank Ltd." },
+        { value: "Small Industries Development Bank of India", text: "Small Industries Development Bank of India" },
+        { value: "Societe Generale", text: "Societe Generale" },
+        { value: "Sonali Bank Ltd.%", text: "Sonali Bank Ltd." },
+        { value: "South Indian Bank Ltd.", text: "South Indian Bank Ltd." },
+        { value: "Standard Chartered Bank", text: "Standard Chartered Bank" },
+        { value: "State Bank of India", text: "State Bank of India" },
+        { value: "Sumitomo Mitsui Banking Corporation", text: "Sumitomo Mitsui Banking Corporation" },
+        { value: "Suryoday Small Finance Bank Ltd.", text: "Suryoday Small Finance Bank Ltd." },
+        { value: "Tamil Nadu Grama Bank", text: "Tamil Nadu Grama Bank" },
+        { value: "Tamilnad Mercantile Bank Ltd.", text: "Tamilnad Mercantile Bank Ltd." },
+        { value: "Telangana Grameena Bank", text: "Telangana Grameena Bank" },
+        { value: "Tripura Gramin Bank", text: "Tripura Gramin Bank" },
+        { value: "UBS AG", text: "UBS AG" },
+        { value: "UCO Bank", text: "UCO Bank" },
+        { value: "Ujjivan Small Finance Bank Ltd.", text: "Ujjivan Small Finance Bank Ltd." },
+        { value: "Union Bank of India", text: "Union Bank of India" },
+        { value: "United Overseas Bank Limited", text: "United Overseas Bank Limited" },
+        { value: "Unity Small Finance Bank Ltd", text: "Unity Small Finance Bank Ltd" },
+        { value: "Utkal Grameen Bank", text: "Utkal Grameen Bank" },
+        { value: "Utkarsh Small Finance Bank Ltd.", text: "Utkarsh Small Finance Bank Ltd." },
+        { value: "Uttar Bihar Gramin Bank", text: "Uttar Bihar Gramin Bank" },
+        { value: "Uttarakhand Gramin Bank", text: "Uttarakhand Gramin Bank" },
+        { value: "Uttarbanga Kshetriya Gramin Bank", text: "Uttarbanga Kshetriya Gramin Bank" },
+        { value: "Vidharbha Konkan Gramin Bank", text: "Vidharbha Konkan Gramin Bank" },
+        { value: "Woori Bank", text: "Woori Bank" },
+        { value: "YES Bank Ltd.", text: "YES Bank Ltd." }
+    ];
+
+    // Convert to UPPERCASE and add "OTHER" option
+    const BANK_OPTIONS = BANK_OPTIONS_RAW
+        .map(bank => ({
+            value: bank.value.toUpperCase(),
+            text: bank.text.toUpperCase()
+        }));
+    BANK_OPTIONS.push({ value: "OTHER", text: "OTHER" });
+
+
+    // --- DEPOSITED BANK OPTIONS (DBS, HDFC, ICICI) ---
+    const DEPOSITED_BANK_OPTIONS = [
+        { value: "DBS", text: "DBS" },
+        { value: "HDFC", text: "HDFC" },
+        { value: "ICICI", text: "ICICI" }
+    ];
+
+    // ----------------------------------------------------------------------
+    // --- 2. DOM ELEMENTS --------------------------------------------------
+    // ----------------------------------------------------------------------
+    const itemsTableBody = document.getElementById('itemsTable');
+    const addRowBtn = document.getElementById('addRowBtn');
+    const submitBtn = document.getElementById('submitToSheet');
+    const statusMessage = document.getElementById('statusMessage');
+    const totalValueDisplay = document.getElementById('totalValueDisplay');
+    const reportBtn = document.getElementById('reportBtn');
+    const modifyBtn = document.getElementById('modifyBtn'); // <-- NEW DOM ELEMENT
+
+    // Header field elements
+    const receivedFromEl = document.getElementById('receivedFrom');
+    const receivedDateEl = document.getElementById('receivedDate');
+    const partyNameEl = document.getElementById('partyName');
+    const bankNameEl = document.getElementById('bankName'); // Header Bank Name (<select>)
+    const otherBankNameEl = document.getElementById('otherBankName'); // Text input for other bank
+    const branchEl = document.getElementById('branch');
+    const stateEl = document.getElementById('state');
+
+    // Modal elements
+    const customModal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    const passwordGroup = document.getElementById('passwordGroup');
+    const modalPasswordInput = document.getElementById('modalPassword');
+
+
+    let rowCount = 0;
+
+    // ----------------------------------------------------------------------
+    // --- 3. MODAL UTILITY FUNCTIONS (Replaces alert() and prompt()) -------
+    // ----------------------------------------------------------------------
+
+    /**
+     * Hides the custom modal.
+     */
+    function hideModal() {
+        customModal.classList.add('opacity-0');
+        customModal.classList.add('scale-95');
+        setTimeout(() => {
+            customModal.classList.add('hidden');
+        }, 300); // Match transition duration
+        passwordGroup.classList.add('hidden');
+        modalConfirmBtn.classList.add('hidden');
+        modalPasswordInput.value = '';
+        modalConfirmBtn.onclick = null;
+        modalPasswordInput.onkeyup = null;
+    }
+    
+    /**
+     * Shows a generic message modal (replaces alert()).
+     * @param {string} title The title of the modal.
+     * @param {string} message The body text.
+     * @param {string} color The Tailwind color class for the title (e.g., 'text-red-600').
+     */
+    function showCustomMessage(title, message, color = 'text-dark-indigo') {
+        modalTitle.textContent = title;
+        modalTitle.className = `text-xl font-bold mb-4 ${color}`;
+        modalBody.textContent = message;
+        passwordGroup.classList.add('hidden');
+        modalConfirmBtn.classList.add('hidden');
+        modalCloseBtn.textContent = 'Close';
+
+        customModal.classList.remove('hidden');
+        setTimeout(() => {
+            customModal.classList.remove('opacity-0');
+            customModal.querySelector('.transform').classList.remove('scale-95');
+        }, 10);
+        
+        modalCloseBtn.onclick = hideModal;
+    }
+
+
+    /**
+     * Shows the password prompt modal (replaces prompt()).
+     */
+    function showPasswordModal() {
+        modalTitle.textContent = 'Report Access';
+        modalTitle.className = 'text-xl font-bold mb-4 text-primary-indigo';
+        modalBody.textContent = 'ENTER THE PASSWORD TO VIEW THE REPORT.';
+        
+        passwordGroup.classList.remove('hidden');
+        modalConfirmBtn.classList.remove('hidden');
+        modalCloseBtn.textContent = 'Cancel';
+
+        customModal.classList.remove('hidden');
+        setTimeout(() => {
+            customModal.classList.remove('opacity-0');
+            customModal.querySelector('.transform').classList.remove('scale-95');
+            modalPasswordInput.focus();
+        }, 10);
+
+        modalCloseBtn.onclick = hideModal;
+
+        modalConfirmBtn.onclick = () => {
+            const userPassword = modalPasswordInput.value.trim();
+            hideModal();
+            if (userPassword === SECRET_PASSWORD) {
+                // Opens the report.html file in a new tab
+                window.open('report.html', '_blank'); 
+            } else {
+                showCustomMessage('Access Denied', 'INCORRECT PASSWORD. PLEASE TRY AGAIN.', 'text-upload-red');
+            }
+        };
+
+        // Allow Enter key to confirm
+        modalPasswordInput.onkeyup = function(event) {
+            if (event.key === 'Enter') {
+                modalConfirmBtn.click();
+            }
+        };
+    }
+
+
+    // ----------------------------------------------------------------------
+    // --- 4. CORE FORM LOGIC FUNCTIONS -------------------------------------
+    // ----------------------------------------------------------------------
+    
+    /**
+     * Converts date string from YYYY-MM-DD (from <input type="date">) to DD/MM/YYYY for submission.
+     */
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const parts = dateString.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return dateString;
+    }
+
+    /**
+     * Function to convert input value to uppercase on every input event.
+     */
+    function toUpperCase(event) {
+        if (event.target.type !== 'number' && event.target.type !== 'date') {
+            event.target.value = event.target.value.toUpperCase();
+        }
+    }
+
+    /**
+     * Generates HTML options for the full Bank Name dropdown in the header.
+     */
+    function generateHeaderBankOptions() {
+        let options = '<option value="" disabled selected>-- PARTY BANK --</option>';
+        // BANK_OPTIONS array now contains all uppercase values
+        BANK_OPTIONS.forEach(bank => {
+            options += `<option value="${bank.value}">${bank.text}</option>`;
+        });
+        return options;
+    }
+
+    /**
+     * Generates HTML options for the Deposited Bank dropdown in the table row.
+     */
+    function generateDepositedBankOptions() {
+        let options = '<option value="" disabled selected>--  --</option>';
+        DEPOSITED_BANK_OPTIONS.forEach(bank => {
+            options += `<option value="${bank.value}">${bank.text}</option>`;
+        });
+        return options;
+    }
+
+    /**
+     * Adds a new row to the Cheque Details table.
+     */
+    function newRow() {
+      rowCount++;
+      const newRow = document.createElement('tr');
+      newRow.classList.add('item-row', 'hover:bg-gray-50', 'transition');
+      newRow.id = `row-${rowCount}`;
+
+      // Get the generated options HTML for the Deposited Bank dropdown
+      const depositedBankOptionsHtml = generateDepositedBankOptions();
+
+      // All TD elements now use p-2 for better spacing (decongestion)
+      const rowContent = `
+        <td class="p-2 text-center text-sm text-gray-700">${rowCount}</td>
+        <td class="p-2"><input type="date" name="chqDate" required class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm"></td>
+        <td class="p-2">
+          <input type="text"
+                 name="chqNumber"
+                 placeholder="CHEQUE NO."
+                 required
+                 maxlength="15"
+                 pattern="[0-9]*"
+                 title="Cheque number should be numeric (0-9)"
+                 class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm">
+        </td>
+        <td class="p-2"><input type="number" name="chqValue" placeholder="0.00" min="0" step="0.01" value="0.00" required oninput="updateGrandTotal()" class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm"></td>
+        <td class="p-2">
+          <select name="depositedBank" required class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm">
+            ${depositedBankOptionsHtml}
+          </select>
+        </td>
+        <td class="p-2"><input type="date" name="depositedDate" class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm"></td>
+        <td class="p-2"><input type="text" name="invoiceDetails" placeholder="INV-001, INV-002..." class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm"></td>
+        <td class="p-2"><input type="text" name="remarks" placeholder="NOTES" class="w-full py-1.5 px-2 border border-gray-300 rounded-lg text-sm"></td>
+        <td class="p-2 text-center">
+          <button type="button" class="p-1 text-xs text-white bg-upload-red hover:bg-red-700 rounded-md transition duration-150" onclick="removeRow(this)">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      `;
+
+      newRow.innerHTML = rowContent;
+      itemsTableBody.appendChild(newRow);
+
+      // Add the event listener to the new row's text inputs for uppercase conversion
+      newRow.querySelectorAll('input[type="text"], textarea').forEach(input => {
+          input.addEventListener('input', toUpperCase);
+      });
+
+      // Focus on the first input field of the new row
+      newRow.querySelector('input[name="chqDate"]').focus();
+    }
+
+    /**
+     * Removes a row from the table and updates the row count and total.
+     */
+    function removeRow(button) {
+      const row = button.closest('tr');
+      row.remove();
+      updateGrandTotal();
+      reindexRows();
+    }
+
+    /**
+     * Reindexes the row numbers (# column) after a row is deleted.
+     */
+    function reindexRows() {
+      const rows = itemsTableBody.querySelectorAll('.item-row');
+      rows.forEach((row, index) => {
+        const rowNumberCell = row.querySelector('td:first-child');
+        rowNumberCell.textContent = index + 1;
+      });
+      rowCount = rows.length;
+    }
+
+    /**
+     * Calculates the sum of all cheque values.
+     */
+    function updateGrandTotal() {
+      let totalValue = 0;
+      const chqValueInputs = itemsTableBody.querySelectorAll('input[name="chqValue"]');
+
+      chqValueInputs.forEach(input => {
+        const value = parseFloat(input.value) || 0;
+        totalValue += value;
+      });
+
+      totalValueDisplay.textContent = '₹ ' + totalValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    /**
+     * Collects all form data into a structured array of objects.
+     */
+    function collectData() {
+        // Header fields
+        const receivedFrom = receivedFromEl.value.trim();
+        const receivedDate = receivedDateEl.value;
+        const partyName = partyNameEl.value.trim();
+        const branch = branchEl.value.trim();
+        const state = stateEl.value;
+
+        // Determine the final Bank Name value
+        let bankNameValue = bankNameEl.value;
+        if (bankNameValue === 'OTHER') {
+            bankNameValue = otherBankNameEl.value.trim();
+            if (!bankNameValue) {
+                showCustomMessage('Validation Error', 'You selected "OTHER". Please type the name of the bank in the "Enter Bank Name" field provided.', 'text-upload-red');
+                return null;
+            }
+        }
+        
+        // Header Validation (check bankNameValue here)
+        if (!bankNameValue || !receivedFrom || !receivedDate || !partyName || !branch || !state) {
+            statusMessage.textContent = '';
+            showCustomMessage('Validation Error', 'Please fill all required header fields (Received From, Party Name, Bank Name, Branch, State, Date).', 'text-upload-red');
+            return null;
+        }
+
+        const items = [];
+        const rows = itemsTableBody.querySelectorAll('.item-row');
+
+        if (rows.length === 0) {
+            statusMessage.textContent = '';
+            showCustomMessage('Validation Error', 'Please add at least one cheque entry.', 'text-upload-red');
+            return null;
+        }
+
+        const formattedReceivedDate = formatDate(receivedDate);
+
+        let allItemsValid = true;
+        rows.forEach(row => {
+            const chqDate = row.querySelector('input[name="chqDate"]').value;
+            const chqNumber = row.querySelector('input[name="chqNumber"]').value.trim();
+            const chqValue = parseFloat(row.querySelector('input[name="chqValue"]').value) || 0;
+            // Deposited Bank is a dropdown
+            const depositedBank = row.querySelector('select[name="depositedBank"]').value; 
+            const depositedDate = row.querySelector('input[name="depositedDate"]').value;
+            const invoiceDetails = row.querySelector('input[name="invoiceDetails"]').value.trim();
+            const remarks = row.querySelector('input[name="remarks"]').value.trim();
+
+            if (!chqDate || !chqNumber || chqValue <= 0 || !depositedBank) {
+                allItemsValid = false;
+            }
+
+            items.push({
+                timestamp: new Date().toLocaleString(),
+                receivedFrom: receivedFrom,
+                receivedDate: formattedReceivedDate,
+                partyName: partyName,
+                bankName: bankNameValue, // Use the dynamically determined bank name
+                branch: branch,
+                state: state,
+                chqDate: formatDate(chqDate),
+                chqNumber: chqNumber,
+                chqValue: chqValue,
+                depositedBank: depositedBank,
+                depositedDate: formatDate(depositedDate),
+                invoiceDetails: invoiceDetails,
+                remarks: remarks
+            });
+        });
+
+        if (!allItemsValid) {
+            statusMessage.textContent = '';
+            showCustomMessage('Validation Error', 'Please fill all required fields in the cheque table (Date, Number, Value, Deposited Bank) and ensure Value is greater than 0.', 'text-upload-red');
+            return null;
+        }
+
+        return items;
+    }
+
+    /**
+     * Submits the collected data to the Google Sheet via the App Script URL.
+     */
+    function submitDataToSheet() {
+        if (SCRIPT_URL === 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE') {
+            showCustomMessage('Configuration Error', 'Please update the SCRIPT_URL variable in the JavaScript section with your actual Google App Script URL before uploading.', 'text-upload-red');
+            statusMessage.textContent = 'Configuration Error.';
+            return;
+        }
+
+        const data = collectData();
+        if (!data) return;
+
+        statusMessage.textContent = 'SUBMITTING DATA...';
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data: data }),
+        })
+        .then(() => {
+            statusMessage.textContent = 'DATA UPLOADED SUCCESSFULLY! ✅';
+            
+            // Clear the form after successful submission
+            setTimeout(() => {
+                 receivedFromEl.value = '';
+                 receivedDateEl.value = '';
+                 partyNameEl.value = '';
+                 bankNameEl.value = ''; // Clear the header bank dropdown selection
+                 otherBankNameEl.style.display = 'none'; // Hide the other field
+                 otherBankNameEl.value = ''; // Clear the other field
+                 branchEl.value = '';
+                 stateEl.value = '';
+                 itemsTableBody.innerHTML = '';
+                 updateGrandTotal();
+                 newRow();
+                 submitBtn.disabled = false;
+                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                 statusMessage.textContent = '';
+            }, 3000);
+        })
+        .catch(error => {
+            console.error('Submission failed:', error);
+            showCustomMessage('Submission Error', 'SUBMISSION FAILED. CHECK CONSOLE OR APP SCRIPT URL. (Check Network Tab for details)', 'text-upload-red');
+            statusMessage.textContent = 'SUBMISSION FAILED.';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        });
+    }
+
+
+    // ----------------------------------------------------------------------
+    // --- 5. EVENT LISTENERS AND INITIALIZATION ----------------------------
+    // ----------------------------------------------------------------------
+
+    // Header field IDs for uppercase conversion
+    const headerInputIds = ['receivedFrom', 'partyName', 'branch'];
+    headerInputIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', toUpperCase);
+        }
+    });
+
+    // Listener for the "Other Bank Name" input
+    otherBankNameEl.addEventListener('input', toUpperCase);
+
+    // Logic to show/hide the "other" bank name input field
+    bankNameEl.addEventListener('change', () => {
+        if (bankNameEl.value === 'OTHER') {
+            otherBankNameEl.style.display = 'block';
+            otherBankNameEl.focus();
+        } else {
+            otherBankNameEl.style.display = 'none';
+            otherBankNameEl.value = ''; // Clear value when hidden
+        }
+    });
+
+    addRowBtn.addEventListener('click', newRow);
+    submitBtn.addEventListener('click', submitDataToSheet);
+    
+    // Event listener for the report button to show the custom password modal
+    reportBtn.addEventListener('click', showPasswordModal);
+
+    // NEW: Event listener for the modify button to open modify.html in a new tab
+    modifyBtn.addEventListener('click', () => {
+        window.open('modify.html', '_blank');
+    }); 
+
+    // ----------------------------------------------------------------------
+    // --- 6. AUTOSUGGESTION DATA AND INITIALIZATION ------------------------
+    // ----------------------------------------------------------------------
+    
+    // 6.1. PARTY NAME AUTOSUGGESTION DATA
+    const PARTY_NAMES = [
+      "A K T PHARMA", "ABIRAMI AGENCIES", "ACCESS LIFESCIENCES", "ADARSH PHARMA",
+      "AISWARYAM PHARMA", "AK PHARMA", "AL SARORAJ PHARMACEUTICALS", "ALAMELU ENTERPRISES",
+      "ALLIED PHARMA", "AMY PHARMA", "AN.M MEDICAL AGENCIES", "ANANDHA PHARMACY PRIVATE LIMITED",
+      "ANDAVAR PHARMA", "ANGEL PHARMACEUTICALS", "ARUN BALAJI AGENCIES", "ASHOK MEDICAL AGENCIES",
+      "ASHOKA PHARMA", "ATOMLIFE HEALTHCARE AND RESEARCH P LTD.", "AVICOT SURGICALS",
+      "BALAJI MEDICAL AGENCY", "BALAJI PHARMACEUTICALS", "BHAGYALAXMI DISTRIBUTORS",
+      "BR ASSOCIATES", "BROTHERS PHARMA", "CENTRAL DISTRIBUTORS", "CHANDRATHIL DRUG HOUSE",
+      "CHELLAS PHARMA DISTRIBUTORS", "CHIRAG MEDICARE SOLUTIONS PVT.LTD.", "CHITRA AGENCIES",
+      "COVAI PHARMA", "CSK LIFE CARE", "DEVAKI PHARMA", "DEVI PHARMA WELLNESS PRIVATE LIMITED",
+      "DHANVANTARI DISTRIBUTORS", "DHARMAPURI PHARMA AGENCY", "DROGARIA SALCETE", "EC AGENCIES",
+      "FATHIMA HEALTH CARE", "GALAXY DISTRIBUTORS", "GANESHA PHARMACY", "GANGA DISTRIBUTORS",
+      "GEETHA PHARMA", "GOA DOCTORS ALLIANCE PVT LTD", "GOPI MEDICAL AGENCY",
+      "GUDDODGI PHARMACEUTICAL DISTRIBUTORS", "GUPTA PHARMA", "GURU MEDICALS", "GVS PHARMACEUTICALS",
+      "HEALTH MART", "HERITAGE MARKETERS", "INCAMED HEALTHCARE PVT LTD", "J.J.PHARMACEUTICALS",
+      "JANANI PHARMACEUTICALS", "JAYASANTHI PHARMA AND VACCINE", "JEE PHARMACEUTICALS",
+      "KADLIMATTI PHARMACEUTICALS", "KALLAT DRUG LINES", "KALYANI PHARMA DISTRIBUTORS",
+      "KAMALAM MEDICAL CORPORATION", "KANNAN AGENCIES", "KAPILA PHARMA", "KARTHIK MEDICAL AGENCIES",
+      "KERALA CHEMICAL & BIOLOGICAL AGENCY", "KERALA COMMERCIAL DISTRIBUTORS", "KEYSONS PHARMA",
+      "KM AGENCIES", "KONGU MEDICAL DISTRIBUTION", "KOOTTIPARAMBIL COMBINES",
+      "KRISHNA PHARMACEUTICAL REMEDIES", "KUGAAN PHARMA", "KUMARAN MEDICARE", "LAKSHMI AGENCIES",
+      "LEKSHMI DRUG HOUSE", "LEO PHARMA DISTRIBUTORS P LTD", "LIFE CARE PHARMA PVT LTD",
+      "LOTUS HEALTH CARE", "LPH PHARMA PVT LTD", "M.G. PHARMACEUTICAL DISTRIBUTORS",
+      "MADURAI HOSPITAL SUPPLIERS", "MADURAI PHARMACEUTICAL DISTRIBUTOR",
+      "MAHAVEER MEDI SALES PVT. LTD", "MAHENDRA DRUG AGENCIES", "MALABAR DRUGS", "MANI PHARMACEUTICALS",
+      "MANOJ PHARMACEUTICALS", "MARUTHI AGENCY", "MEDI HOUSE", "MEDI SALES",
+      "MEDICOTRADE DISTRIBUTORS", "MEDIHAUXE PHARMACEUTICALS PVT.LTD.", "MEENA PHARMA",
+      "MOHANA AGENCIES", "MONEY PHARMA", "N L COMBINES ", "NAGAMMAI PHARMA",
+      "NANDANA PHARMA DISTRIBUTORS", "NATIONAL AGENCIES", "NATIONAL DRUG LINES",
+      "NEW LIFE ENTERPRISES", "NEW RRPD PVT LTD", "NEW SUJITH PHARMA",
+      "NEW VISWABHARATHY DRUG LINES PVT LTD.", "NF LIFELINES", "NORTHERN PHARMA",
+      "NOYYAL PHARMA DISTRIBUTORS", "NRS PHARMA", "NUTHAN PHARMA", "OMKAR PHARMACY",
+      "ORANGE AGENCIES", "ORBIT DRUGS", "PADMA PHARMACEUTICALS",
+      "PALEPU PHARMA DISTRIBUTORS PVT LTD", "PALEPU PHARMA DISTRIBUTORS PVT LTD - MDU",
+      "PALEPU PHARMA DISTRIBUTORS PVT LTD (MYLA", "PALEPU PHARMA DISTRIBUTORS PVT LTD,KOTTI",
+      "PALEPU PHARMA DISTRIBUTORS PVT LTD,MUGA", "PALEPU PHARMA DISTRIBUTORS PVT LTD,THAM",
+      "PALEPU PHARMA PVT LTD MYLAPORE", "PARTNERS DRUG LINKS", "PERFECT MEDICAL ENTERPRISES PVT LTD",
+      "PHARMACARE", "POOJA DISTRIBUTORS", "PRAGATI PHARMACEUTICALS",
+      "PURANI HOSPITAL SUPPLIES PVT LTD", "PURANI HOSPITAL SUPPLIES PVT LTD-CHENNAI",
+      "R K MEDICALS AND AGENCY", "R.P. PHARMACEUTICALS", "RAGHAVA PHARMA",
+      "RAJAMANNAR MEDICAL AGENCIES", "RAM AGENCIES", "RAMESH PHARMA", "RATHNA PHARMA AGENCIES",
+      "RELIANCE DRUGS", "RESORT MEDICALS", "ROYAL AGENCY", "RR PHARMA", "RS DRUGS & MEDICALS PVT LTD",
+      "RSM PHARMA PVT LTD", "S K PHARMA", "S P MEDITECH PVT LTD", "SAI PHARMA",
+      "SAI RADHA PHARMA (INDIA) PVT.LTD.", "SANJEEVANI DRUGS", "SANSI AGENCIES",
+      "SANTHI PHARMACEUTICALS", "SELVARATHNA AGENCIES", "SENTHIL MURUGAN AGENCY", "SENTHIL PHARMA",
+      "SERUM AND VACCINES", "SHAKTHI LIFE LINES", "SHALIMAR AGENCIES",
+      "SHANBALAJI PHARMA DISTRIBUTORS PVT LTD", "SHANKAR GANESH ASSOCIATES", "SHEEN PHARMA",
+      "SHIVA DRUG HOUSE", "SHREE AMMAN PHARMA INDIA PVT LTD", "SHREE PHARMACEUTICALS",
+      "SHREE RAGHAVENDRA ENTERPRISES", "SHRI BHAKTHI MEDICAL AGENCIES P LTD",
+      "SHRI CHOUDHARI MEDICAL CENTRE", "SHRI GURU AGENCIES", "SHRI JAYAM MEDICAL AGENCIES",
+      "SHRI PHARMA ASSOCIATES", "SHUNMUKAM MEDICAL HALL", "SIKA AGENCIES", "SP.SS MEDICAL HALL",
+      "SREE KUMARAN PHARMA", "SREE MAHALAKSHMI PHARMA", "SREE SP.A PHARMACEUTICALS",
+      "SREEPADMAM PHARMA AND AGENICES", "SRI AMBAL JAI SHREE MEDICALS", "SRI AMMAN MEDICAL AGENCIES",
+      "SRI ENTERPRISES", "SRI GUHAN AGENCIES", "SRI KAMALAM MEDICAL AGENCIES",
+      "SRI KARUR MEDICAL AGENCIES", "SRI KRISHNA MEDICALS", "SRI LAKSHMI PHARMACEUTICALS",
+      "SRI LAXMI DRUG STORES", "SRI RAM MEDICAL AHENCIES", "SRI RAM PHARMA AGENCIES",
+      "SRI SELVAGANESH MEDICALS AGENCIES", "SRI SENTHIL MEDICAL AGENCIES",
+      "SRI SHANMUGA AGENCY", "SRI SRINIVASA AGENCIES", "SRI VENKATESHWARA MEDICAL AGENCIES",
+      "SRI VENKATESWARA MEDICAL AGENCIES", "SRI VIJAY PHARMA", "SRI VINAYAK PHARMA DISTRIBUTOR",
+      "SRI VN PHARMACEUTICALS", "SRISUN PHARMA", "STAJER VACCINE CENTER", "STANDARD AGENCIES",
+      "SUBA PHARMAGES", "SURESH PHARMA AGENCIES (CHENNAI) PVT LTD", "SVS PHARMACEUTICALS",
+      "SWAPNA PHARMA KASARAGOD", "TELY DRUGS", "THE CITY DRUGS", "THIRUPATHI AND THIRUMALA",
+      "THODUPUZHA DRUG HOUSE PRIVATE LIMITED", "TRUST PHARMACEUTICALS", "UMESH PHARMA",
+      "UNIQUE ENTERPRISES", "UNITY DRUG HOUSE", "VA DISTRIBUTORS", "VACCI CARE", "VALLI PHARMA",
+      "VARDHMAN MEDISALES PVT LTD", "VARGHESE & COMPANY", "VEE VEE PHARMA", "VELAN PHARMA",
+      "VEXWIN PHARMA TRADERS", "VINOD PHARMA", "VMS LIFE CARE",
+      "WESTERN HEALTH CARE SOLUTIONS PVT LTD", "YOGIRAM DISTRIBUTORS PVT LTD", "ZENEX INTERNATIONAL"
+    ];
+
+    /**
+     * Populates the datalist element for party name autosuggestions.
+     */
+    function populatePartyNamesDatalist() {
+        const datalist = document.getElementById('partyNames');
+        let optionsHtml = '';
+        PARTY_NAMES.forEach(name => {
+            // Options are converted to uppercase to match the input's forced uppercase style
+            optionsHtml += `<option value="${name.toUpperCase()}">`;
+        });
+        datalist.innerHTML = optionsHtml;
+    }
+
+
+    // 6.2. NEW RECEIVED FROM NAMES AUTOSUGGESTION DATA
+    const RECEIVED_FROM_NAMES = [
+      "A ANANTHAN", "A FAROOK", "A MOHAMMED YASEEN JANI", "A MUBARAK ALI", "A MURALIDHARAN", 
+      "A VIGNESH KUMAR", "A.MASANAMUTHU", "AABUBKAR", "ABDUL HAKEEM", "ABDUL KHADER JEELANI",
+      "ABDUL NISHADMON P", "ABDUL RAHMAN", "ABDUL RAHOOF", "ABDUL SHUKOOR P", "ABDUL WASEEM ILAHI",
+      "ABDULHAMEED F NADAF", "ABDULLAH SHARIEF MOHAMMED ZAFRULLAH", "ABDUR RAHMAN D", "ABDUR REHMAN MAHATHUM", 
+      "ABULKHASEEM GADAGKAR", "ADARSH J", "AJITH SHANMUGAM", "AKHIL P ASHOK", "AKHIL SK", 
+      "AKSHARA S", "AKSHAY K A", "AKSHAY S", "AKSHAY S M", "AMBAREESH PATIL", 
+      "ANANTHAN S", "ANEES NASIR", "ANEESH G S", "ANEESHKUMAR PS", "ANIL KUMAR VISHWAKARMA", 
+      "ANISH A", "ANISH KUMAR K", "ANOOP.C", "ANUSHA P MOHANAN", "APSANA Y", 
+      "ARAVIND", "ARJUN PJ", "ARJUN S K", "ARSATH KHAN S", "ARSHAD A KAZI", 
+      "ARSHAL PP", "ARUMUGAM", "ARUN KS", "ARUN KUMAR A", "ARUN KUMAR S", 
+      "ARUNKUMAR R", "ASARUDEEN M", "ASGARALI MIRANWARALI RAFAI", "ASHARAF", "ASHOK KUMAR S", 
+      "ASHOKKUMAR", "ASLAM KHAN", "ASWANTH PP", "ATIF UR RAHMAN", "AYNUL BARI", 
+      "AYYANAR M", "AZHARUDDIN", "BALAJI", "BALAJI RATHAKRISHNAN", "BALAJI S", 
+      "BALAMURUGAN S", "BARANIKUMAR KRISHNAMOORTHI", "BASAVARAJ", "BHAGAVATHI SELVA S", "BHAGEERADH", 
+      "BHARAMAPPA A NESARGI", "BINU K P", "C DINAKARAN", "CHANDAN S N", "CHANDHIRASEKARAN", 
+      "CHELLADURAI K", "D SANJAY", "DARSHAN KS", "DASHAGEER BABANAGAR", "DATTATRI", 
+      "DEEPAK KUMAR V", "DEEPAK MR", "DEEPU S", "DEVAKUMAR V", "DHANAPAL DURAISAMY", 
+      "DHANAPAL S", "DHANRAJ", "DHANUSH", "DHARBAR RAJA K", "DINESHKRISHNA K R", 
+      "DINU PAULY", "DIPAK BABURAV DELEKAR", "DIVIN KURIAN", "DURAIRAJ K", "ESWARAN PANDIYAN P", 
+      "FAIROSE KHAN A", "FAKKEERAPPA EMMI", "G AJAYKUMAR", "GIRISH KUMAR MOHANKUMAR", "GOKUL PRASANTH L", 
+      "GOKULA KANNAN A", "GOKULESHWAR RAVI", "GOPINATH KUPPOVIREDDY", "GOVINDARAJ P", "GOWTHAM KALISHWARAN", 
+      "GUNASEKARAN P", "HAFSAL RAHMAN MOOZHIYAN", "HARIHARAN VASUNAIDU", "HARIHARAN VENKATESH", "HARIKRISHNAN", 
+      "HARIPRASAD RAMAKRISHNA MAKATE", "HASRATH ABUTHAHIR", "HUMAYUN RASHEED", "IRAFAN NADAF", "JAGADEESAN R", 
+      "JAGADEESH", "JAGADHEESHEN R", "JAIGANESH KALIRAJ", "JAINJOSEPH S", "JAWAID AHMAD MIR", 
+      "JAYAPRABHU N", "JAYESH M G", "JEEVA A", "JERON RS", "JEYASURYA", 
+      "JISHNU C S", "JISHNU DEV S", "JISMON JOHNY", "JITHESH K", "JITHESH NAIK P R", 
+      "JITHIN JS", "JITHIN K", "JUMAYA K A", "JUNAID KHAN", "K.GOPINATH", 
+      "K.RAJKUMAR", "KAILAS H", "KALAISELVAN GURUNATHAN", "KALLANAI P", "KAMAL B", 
+      "KANNADAS S", "KANNAN S.M", "KANNAN.M", "KARTHIK N", "KARTHIK S", 
+      "KARTHIKEYAN A", "KARUNANIDHI RASAKANNU", "KAVIYARASU", "KEDARINATH", "KIRAN A R", 
+      "KIRAN KM", "KUMAR G", "KUMMARY SRINIVASULU", "KUNACILAN V", "KURUBA SESHADRI", 
+      "LAKIALI KASHIMSAB MANGASOOLI", "LAL KRISHNA S", "LALITHA ANAND V", "LENIN S", "LOGESH M", 
+      "M A NOWFAL ISMAIL", "M ABHIJITH", "M AMBETHKUMAR", "M D FAIZAL IQBAL", "M.DHAVAMOORTHY", 
+      "MAHAMMADSAQIB", "MAHARAJAN K", "MAHAROOF M T", "MAMUNEESWARAN RAJENDRAN", "MANIGANDAN PALANI", 
+      "MANIKANDAN GN", "MANISHA MARUṬI NAIK", "MANJUNATH", "MANJUNATHA", "MANOJ M", 
+      "MANU TP", "MEERA P", "MEHBOOB HUSSAIN SHAH", "MITHESH B", "MOHAMED ANSAL M", 
+      "MOHAMED ANSAR S", "MOHAMED NOORUL AFFZAR.S", "MOHAMED SIRAJ M", "MOHAMMAD AFSHAN M V", "MOHAMMAD AQUEEL", 
+      "MOHAMMAD ASHIQ", "MOHAMMAD HUSSAIN MIR", "MOHAMMAD SHAMEER AK", "MOHAMMED KHAZA MOIDEEN", "MOHAMMED RASHIK K", 
+      "MOHAMMED RIZWAN M", "MOHAMMED SAQIB BASEER", "MOHAMMED SHAKIR RIZWAN", "MOHAN RAAJ CS", "MOHANRAJ KRISHNAN", 
+      "MUBARAK A", "MUHAMMAD ILYAS A", "MUHAMMED RASHIK M", "MUHAMMED SAYEDALI.N", "MUJIBUR RAHMAN S", 
+      "MUKESH C", "MUKESH KUMAR", "MUKESH R", "MUTHUMAINKKAM S", "MUTHUSELVAM C", 
+      "MUZAMMIL ANWAR SATTAR", "N SUNDAR SURESH", "NAGARAJ S", "NAJEEBULLA K P", "NASSAR ULLAH SHALA", 
+      "NAVEED AHAMED", "NAVEEN INAS FERNANDES", "NAVEEN VELUSAMY", "NAWAS M", "NEHRU R", 
+      "NIKHIL B", "NIRSHAD AHAMMED AT", "NISARGA CHAVAN", "NITHIN M", "NIZARALI N", 
+      "P.MANIKANDAN", "PARTHIBAN A", "PAVIKUMAR A", "PAVITHRAN D", "PERIYAPANDI P", 
+      "PHILIPS P", "PONMALAI JEMINI", "PONMURUGAN M", "POORNIMA BIRADAR SAVANUR", "PRABU T.M.", 
+      "PRAJEESH TG", "PRAKASH KUPPUSAMI", "PRANEETH M", "PRASAD S", "PRASANNA KUMAR", 
+      "PRASANNA SRINIVASAN", "PRATHVIRAJ", "PRAVEEN KP", "PRAVEEN KUMAR H", "PREM SANKAR B", 
+      "PRINCE PETER", "PRITAM DEEPAK PEDNEKAR", "R KALIAPPAN", "RAHUL B", "RAHUL E", 
+      "RAHUL PK", "RAHUL RAJEEV", "RAJA H", "RAJABHAKSHI", "RAJALAKSHMI R", 
+      "RAJASHEKHARA", "RAJEESH P", "RAKESH B", "RAMALINGAM C", "RANJITH KUMAR AYYAMPERUMAL", 
+      "RATHNAMOORTHY NADARAJ", "RAVISANKAR.R", "RAZIK ZAIN V", "RIJIN AYANKI", "RINSHAD", 
+      "RIYAS AHAMMED T R", "RIYAS BABU I", "S KANNAN", "S RAVITEJA", "S. AJAI VIGNESH", 
+      "S.KANDASAMY", "SAAD K V", "SABARINATHAN CHANDRU", "SABIN B", "SADASHIVA HUDDAR", 
+      "SAJAD AHMAD WANI", "SAJAN THOMAS", "SAKTHIVEL SUBRAMANIAN", "SAMSUDEEN A", "SANDEEP K DAYANAND", 
+      "SANIYA TABASSUM", "SANJAY CHAURASIYA", "SANJAY M", "SANJUKUMAR", "SANKARAMOORTHI T", 
+      "SANTHOSH P", "SANTHOSHKUMAR C", "SANTHOSHKUMAR K", "SANTOSH REDDY", "SARAN SASEENDRAN", 
+      "SARATH KUMAR VS", "SATHISHKUMAR THANGAVEL", "SATHIYA MURTHY S", "SAYANA A S", "SEENUVASAN BALAKRISHNAN", 
+      "SELVAKUMAR N", "SELVAKUMAR S", "SELVARAJ P", "SELVARAJ PONNUSAMY", "SHABAB ZEHRA", 
+      "SHAHNAWAZ AHMED", "SHAIK BUDENSHA VALI", "SHAJAJAN. S", "SHARFUDEEN BUHARY S M", "SHAYK MUSTHAFA. J", 
+      "SHEIK ABDULLA K", "SHIBIN KS", "SHIVANAND", "SHODHANA R SHETTY", "SHRIDHAR NAGNATH UTKAL", 
+      "SIDHARTH DINESH V", "SIRANJEEVI S", "SIVANESAN K", "SOUMYA SALIMKUMAR", "SRAVAN K", 
+      "SREEDEVI EK", "SREEJITH R", "SRIDHARA B", "SRINIVASAN S", "SRITHAR", 
+      "SUBASH MURUGESAN", "SUBHAN D", "SUBRAMANIAN M", "SUHAIL MAHAMMAD", "SUJIN S", 
+      "SUJITH.S", "SULAIMAN G", "SULTHAN ALAVUDEEN N M", "SUMANTHA C S", "SUNDARAMOORTHY M", 
+      "SUNILRAJ S", "SURESH KUMAR S", "SURIYA N", "SURYALAKSHMI A", "SYED ALI M A", 
+      "SYED AMEENUL ASLAM S", "SYED BAKRUTHIN ALI S", "SYED MUFIZ", "SYED SULEMAN", "SYED ZAKIR PASHA", 
+      "T.KARTHICK", "THANSEER KHAN N S", "THEJAS V JOSE", "THENSAD CV", "THIRUMURUGAN M", 
+      "THIRUPAL", "TOQIER PASHA", "UNAIS K", "V.MADHUBABU", "VAITHILINGAM N", 
+      "VASANTH SIVASAMY", "VELU R", "VIBIN KV", "VIGNESH NAGAPANDI", "VIGNESHWARAN D", 
+      "VIGNESHWARAN K", "VIJAY ANAND B", "VIJAY C", "VIJAY M", "VIJAYABASKER M", 
+      "VIKNESH MAGUDEESHWARAN", "VINAYAK MARUTI MALI", "VINEESH PC", "VINEETH VJ", "VIPIN V NAIR", 
+      "VISHAL SAVANT KAMBLE", "VISHNU BALAKRISHNAN", "VISHNU D P", "VISHNU PK", "VISHNU PRASAD M P", 
+      "VISHNU SASI", "VISHWANATHA G", "VISWESWARAN C", "VIVEK", "YASAR ARAFATH JAHIR HUSAIN", 
+      "YATHISH NARAYANA"
+    ];
+
+    /**
+     * Populates the datalist element for Received From autosuggestions.
+     */
+    function populateReceivedFromNamesDatalist() {
+        const datalist = document.getElementById('receivedFromNames');
+        let optionsHtml = '';
+        // RECEIVED_FROM_NAMES is the new array
+        RECEIVED_FROM_NAMES.forEach(name => {
+            // Options are converted to uppercase to match the input's forced uppercase style
+            optionsHtml += `<option value="${name.toUpperCase()}">`;
+        });
+        datalist.innerHTML = optionsHtml;
+    }
+
+    // 6.3. INITIALIZATION
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set received date to today by default
+      const today = new Date();
+      receivedDateEl.value = today.toISOString().split('T')[0];
+
+      // Populate the HEADER Bank Name dropdown
+      bankNameEl.innerHTML = generateHeaderBankOptions();
+
+      // Populate the Party Name datalist
+      populatePartyNamesDatalist(); 
+      
+      // NEW: Populate the Received From datalist
+      populateReceivedFromNamesDatalist();
+
+      // Add the first cheque row
+      newRow();
+    });
+
+  </script>
+</body>
+</html>

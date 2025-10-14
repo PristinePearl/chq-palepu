@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PALEPU(SS) CHEQUE MODIFICATION</title>
+    <link rel="icon" 
+        href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" 
+        type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .left-panel {
+            width: 350px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .right-panel {
+            flex: 1;
+            background: #fafbfc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            /* Deep Indigo Gradient */
+            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%); 
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .company-logo {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        /* --- Tabs Styling --- */
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            text-align: left;
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #374151;
+            border-left: 4px solid transparent;
+        }
+        
+        .tab-button.active {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #3730a3; 
+            border-left: 4px solid #4f46e5; 
+        }
+
+        .search-section {
+            padding: 20px;
+            background: #f8fafc;
+            flex: 1;
+            overflow-y: auto; 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* --- Forms & Inputs --- */
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 0; 
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.85rem;
+            letter-spacing: 0.025em;
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5; 
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); 
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); 
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #3730a3 0%, #312e81 100%); 
+            transform: translateY(-1px);
+        }
+
+        /* NEW BUTTON STYLE FOR SAVE/MODIFY */
+        .btn-save {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); /* Orange for Modify/Save */
+        }
+        .btn-save:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+        }
+        /* NEW BUTTON STYLE FOR SECONDARY ACTION (CANCEL/EXPORT) */
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+            margin-top: 5px; 
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #1f2937 1f2937%);
+        }
+
+        .results-section {
+            padding: 10px;
+            flex: 1;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .loading {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            padding: 40px;
+            font-size: 1rem;
+        }
+
+        .error {
+            background: #eef2ff; 
+            color: #4f46e5; 
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4f46e5; 
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sr-ref { 
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .total-amount {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #059669; 
+            background: #ecfdf5;
+            padding: 3px 6px;
+            border-radius: 3px;
+            border: 1px solid #a7f3d0;
+        }
+
+        .document-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #1f2937;
+            color: white;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-content {
+            padding: 8px;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 6px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 6px;
+            border-radius: 3px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .field-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            letter-spacing: 0.05em;
+        }
+
+        .field-value {
+            font-size: 0.85rem;
+            color: #1f2937;
+            font-weight: 500;
+            word-break: break-word;
+            min-height: 18px; 
+        }
+        
+        /* Style for editable fields within the card */
+        .field-value input, .field-value textarea {
+            border: 1px solid #ccc;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            width: 100%;
+            box-sizing: border-box;
+            background: white;
+        }
+        
+        .field-value input[type="text"]:read-only, 
+        .field-value input[type="date"]:read-only,
+        .field-value textarea:read-only {
+            background-color: #f3f4f6; /* Light gray for read-only fields */
+            color: #6b7280;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 20px 10px;
+            font-size: 0.9rem;
+            background: #f9fafb;
+            border-radius: 4px;
+            border: 1px dashed #d1d5db;
+        }
+
+        /* --- Status indicator colors --- */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .status-deposited { background: #10b981; }
+        .status-pending { background: #f59e0b; }
+        .status-returned { background: #ef4444; }
+        .status-represented { background: #eab308; }
+        .status-blank { background: #8b5cf6; }
+
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="header">
+                <div class="header-content">
+                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" alt="PRISTINE PEARL PHARMA Logo" class="company-logo">
+                    <h1>PALEPU(SS) CHEQUE MODIFIER</h1>
+                </div>
+            </div>
+                    
+            <div class="tabs">
+                <button class="tab-button active">✏️ MODIFY CHEQUE</button>
+                </div>
+
+            <div class="search-section">
+
+                <div id="chqSearch" class="tab-content active" style="display: block;">
+                    <form class="search-form" id="searchForm">
+                        <h3 style="font-size: 1rem; margin-bottom: 5px; color: #3730a3;"> Search Cheque To Modify</h3>
+                        <div class="form-group" style="display: none;">
+                            <label for="sheetId">Google Sheet ID:</label>
+                            <input type="text" id="sheetId" placeholder="Enter Google Sheet ID" value="1iibqMhUKCdHU99zefkbkU1K4Pfqpg7eeq_Eu23hCSvY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ChqNumber">Cheque Number:</label>
+                            <input type="text" id="ChqNumber" placeholder="Enter Cheque Number" required oninput="this.value = this.value.toUpperCase()">
+                        </div>
+                        <button type="submit" class="btn">Search</button>
+                        <button type="button" class="btn btn-secondary" id="exportBtn" style="display: none;">EXPORT (Single Cheque)</button>
+                    </form>
+                </div>
+                </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="results-section" id="resultsSection">
+                <div class="no-results">Enter Cheque Number and click Search to view details</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ******************************************************************************
+        // !!! CRITICAL: REPLACE THIS WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL !!!
+        const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx411lcUBT9oV5WpeFuwlvJ7mAxvh0AGYUnpO3zIo7XHlIB9T_h7gDCdfs_7XSs90yp/exec'; 
+        // ******************************************************************************
+
+        // --- PASSWORD CONSTANT ---
+        const EDIT_PASSWORD = "pearl@chq";
+        // -------------------------
+
+        // Global variables for storing results
+        let lastSearchResults = []; 
+        
+        // --- Core Helper Functions ---
+        function formatFieldValue(value, defaultValue = 'N/A') {
+            const trimmedValue = String(value || '').trim();
+            if (trimmedValue === '' || trimmedValue === 'null' || trimmedValue === 'undefined') {
+                return defaultValue;
+            }
+            return trimmedValue;
+        }
+
+        function getChequeStatus(row) {
+            // Priority: Represented > Returned > Deposited > Blank > Pending
+            if (row['Represent Date']) {
+                return { status: 'REPRESENTED', color: '#eab308', class: 'status-represented' };
+            } else if (row['Return Date']) {
+                return { status: 'RETURNED', color: '#ef4444', class: 'status-returned' };
+            } else if (row['Deposited Date']) {
+                return { status: 'DEPOSITED', color: '#10b981', class: 'status-deposited' };
+            } else {
+                // Check if it's a blank cheque
+                const chqValue = parseFloat((row['Chq Value (₹)'] || '0').replace(/[^0-9.-]+/g,"")) || 0;
+                if (chqValue === 0 || !row['Chq Value (₹)']) {
+                    return { status: 'BLANK', color: '#8b5cf6', class: 'status-blank' };
+                }
+                return { status: 'PENDING', color: '#f59e0b', class: 'status-pending' };
+            }
+        }
+
+        async function fetchSheetData(sheetId) {
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+
+            try {
+                const response = await fetch(url, { method: 'GET', mode: 'cors' });
+                
+                if (response.ok) {
+                    const csvText = await response.text();
+                    return parseCSV(csvText);
+                } else {
+                    throw new Error(`Sheet access failed with status: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error("Sheet Fetch Error:", error);
+                throw new Error('Failed to fetch data from Google Sheets. Check Sheet ID/Access.');
+            }
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+            
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').replace(/\r/g, ''));
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/"/g, ''));
+                const row = {};
+
+                headers.forEach((header, index) => {
+                    row[header] = values[index] || '';
+                });
+                
+                data.push(row);
+            }
+            return data;
+        }
+        
+        function parseDate(dateString) {
+            if (!dateString) return null;
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                const date = new Date(parts[2], parts[1] - 1, parts[0]);
+                date.setHours(12, 0, 0, 0);
+                return date;
+            }
+            return null;
+        }
+
+        function exportToCSV(data, filename) {
+            if (!data || data.length === 0) {
+                alert("No data to export.");
+                return;
+            }
+            const headers = Object.keys(data[0]);
+            const csvRows = [];
+            csvRows.push(headers.map(h => `"${h}"`).join(','));
+            for (const row of data) {
+                const values = headers.map(header => {
+                    let value = row[header] === undefined || row[header] === null ? '' : String(row[header]);
+                    if (header.includes('Chq Number')) {
+                        value = value.replace(/"/g, '""');
+                        return `="` + value + `"`; 
+                    }
+                    return `"${value.replace(/"/g, '""')}"`;
+                });
+                csvRows.push(values.join(','));
+            }
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `${filename}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function cancelEdit(chqNumber) {
+            document.getElementById('ChqNumber').value = chqNumber;
+            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+        }
+
+        // --- UI Rendering Functions (View/Edit) ---
+
+        function getChequeDocumentSectionsHtml(row, isEditable = false) {
+            
+            function formatDateForInput(dateString) {
+                if (!dateString) return '';
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                }
+                return dateString.match(/^\d{4}-\d{2}-\d{2}$/) ? dateString : '';
+            }
+            
+            function getFieldHtml(fieldLabel, fieldKey, value, type = 'text', isEditable) {
+                
+                if (!isEditable) {
+                    const style = (fieldKey === 'Return Date' && row['Return Date']) ? 'background: #fee2e2;' : 
+                                  (fieldKey === 'Represent Date' && row['Represent Date']) ? 'background: #dcfce7;' : 'background: white;';
+                    const displayValue = fieldKey === "Chq Value (₹)" ? `₹${(parseFloat(String(value).replace(/[^0-9.-]+/g,"")) || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : formatFieldValue(value, '-');
+
+                    return `
+                        <div class="field" style="${style}">
+                            <div class="field-label" style="${fieldKey.includes('Return') ? 'color: #dc2626;' : ''}">${fieldLabel}</div>
+                            <div class="field-value">${displayValue}</div>
+                        </div>
+                    `;
+                }
+
+                const formattedValue = (type === 'date') ? formatDateForInput(value) : value;
+                const isTextArea = fieldKey.includes('Remarks') || fieldKey.includes('Invoice Details');
+                
+                let inputElement;
+                if (isTextArea) {
+                    inputElement = `<textarea id="${fieldKey}" name="${fieldKey}" rows="2">${formatFieldValue(value, '')}</textarea>`;
+                } else if (type === 'date') {
+                     const displayValue = formattedValue;
+                     inputElement = `<input type="date" id="${fieldKey}" name="${fieldKey}" value="${displayValue}">`;
+                } else {
+                    inputElement = `<input type="text" id="${fieldKey}" name="${fieldKey}" value="${formatFieldValue(value, '')}">`;
+                }
+
+                return `
+                    <div class="field">
+                        <div class="field-label">${fieldLabel}</div>
+                        <div class="field-value">${inputElement}</div>
+                    </div>
+                `;
+            }
+
+            const fields = [
+                { label: "Cheque Date", key: "Chq Date", type: 'date', section: 1 },
+                { label: "Cheque Value (₹)", key: "Chq Value (₹)", type: 'text', section: 1 },
+                { label: "Party's Bank Name", key: "Bank Name (Party)", type: 'text', section: 1 },
+                { label: "Branch", key: "Branch", type: 'text', section: 1 },
+                { label: "State", key: "State", type: 'text', section: 1 },
+                { label: "Deposited Bank (Our)", key: "Deposited Bank (Our Bank)", type: 'text', section: 2 },
+                { label: "Deposited Date", key: "Deposited Date", type: 'date', section: 2 },
+                { label: "Return Date", key: "Return Date", type: 'date', section: 2 },
+                { label: "Represent Date", key: "Represent Date", type: 'date', section: 2 },
+                { label: "Remarks", key: "Remarks", type: 'text', section: 2, span: 2 }, 
+                { label: "Return Remarks", key: "Return Remarks", type: 'text', section: 2, span: 2 }, 
+                { label: "Received From", key: "Received From", type: 'text', section: 3 },
+                { label: "Received Date (Entry)", key: "Received Date", type: 'date', section: 3 },
+                { label: "Invoice Details", key: "Invoice Details", type: 'text', section: 3, span: 2 }
+            ];
+
+            let html = ` <div class="document-sections"> `;
+
+            // Section 1: Cheque & Value Details
+            html += `<div class="section"><div class="section-header">Cheque & Value Details</div><div class="section-content"><div class="section-grid">`;
+            fields.filter(f => f.section === 1).forEach(field => {
+                html += getFieldHtml(field.label, field.key, row[field.key], field.type, isEditable);
+            });
+            html += `</div></div></div>`; 
+
+            // Section 2: Deposit & Return/Represent Details
+            html += `<div class="section"><div class="section-header">Deposit & Return/Represent Details</div><div class="section-content"><div class="section-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">`;
+            fields.filter(f => f.section === 2).forEach(field => {
+                const colSpanAttr = field.span && field.span > 1 ? `style="grid-column: span ${field.span} / auto;"` : '';
+                html += `<div ${colSpanAttr}>${getFieldHtml(field.label, field.key, row[field.key], field.type, isEditable)}</div>`;
+            });
+            html += `</div></div></div>`; 
+            
+            // Section 3: Entry & Invoice Details
+            html += `<div class="section"><div class="section-header">Entry & Invoice Details</div><div class="section-content"><div class="section-grid">`;
+            fields.filter(f => f.section === 3).forEach(field => {
+                const colSpanAttr = field.span && field.span > 1 ? `style="grid-column: span ${field.span} / auto;"` : '';
+                html += `<div ${colSpanAttr}>${getFieldHtml(field.label, field.key, row[field.key], field.type, isEditable)}</div>`;
+            });
+            html += `</div></div></div>`; 
+
+            html += `</div>`; 
+            return html;
+        }
+
+
+        // Function to render a single cheque card for VIEWING (Read-Only)
+        function renderChequeForView(row) {
+            const statusInfo = getChequeStatus(row);
+            const chqNumber = row['Chq Number']; 
+            
+            // Stringify and escape the row data to pass it safely to the startEdit function
+            const rowDataString = JSON.stringify(row).replace(/'/g, '&#39;').replace(/"/g, '&quot;'); 
+
+            const html = `
+                <div class="result-card" id="cheque-view-card">
+                    <div class="result-header" style="flex-wrap: wrap; align-items: flex-start;">
+                        <div style="flex-basis: 100%;">
+                            <h2>${row['Party Name'] || 'N/A Party'}</h2> 
+                        </div>
+                        <div class="sr-ref" style="flex-basis: 100%; margin-bottom: 8px;">
+                            Cheque No: <span>${chqNumber}</span>
+                        </div>
+                        <div class="total-amount" style="background: none; border: none; color: ${statusInfo.color}; font-weight: 700; flex-basis: 100%; margin-bottom: 10px;">
+                            <span class="status-indicator ${statusInfo.class}"></span>Status: ${statusInfo.status}
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button type="button" class="btn btn-save" style="flex: 1;" onclick="startEdit('${rowDataString}')">✏️ Modify Details</button>
+                        </div>
+                    </div>
+                    
+                    ${getChequeDocumentSectionsHtml(row, false)}
+                </div>
+            `;
+            return html;
+        }
+
+        // Function to check password and switch to edit mode
+        function startEdit(rowDataString) {
+            const enteredPassword = prompt("Enter password to modify cheque details");
+
+            if (enteredPassword === null) {
+                alert("Modification canceled.");
+                return;
+            }
+
+            if (enteredPassword !== EDIT_PASSWORD) {
+                alert("Incorrect password. Modification denied.");
+                return;
+            }
+            
+            const row = JSON.parse(rowDataString.replace(/&#39;/g, "'").replace(/&quot;/g, '"'));
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = renderChequeForEdit(row);
+            
+            resultsSection.scrollTop = 0;
+        }
+
+        // Function to render cheque card in EDITABLE mode
+        function renderChequeForEdit(row) {
+            const statusInfo = getChequeStatus(row);
+            const chqNumber = row['Chq Number']; 
+            
+            const html = `
+                <div class="result-card" id="cheque-edit-form-card">
+                    <form id="editChequeForm">
+                        <input type="hidden" name="Chq Number" value="${chqNumber}">
+                        
+                        <div class="result-header" style="flex-wrap: wrap; align-items: flex-start;">
+                            <div style="flex-basis: 100%;">
+                                <h2>${row['Party Name'] || 'N/A Party'} (EDITING)</h2> 
+                            </div>
+                            <div class="sr-ref" style="flex-basis: 100%; margin-bottom: 8px;">
+                                Cheque No: <span style="font-weight: 700; color: #1f2937;">${chqNumber}</span>
+                            </div>
+                            <div class="total-amount" style="background: #fef9e6; border: 1px solid #f97316; color: #f97316; font-weight: 700; flex-basis: 100%; margin-bottom: 10px;">
+                                <span class="status-indicator" style="background-color: #f97316;"></span>MODIFICATION MODE
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; width: 100%;">
+                                <button type="button" class="btn btn-save" style="flex: 1;" onclick="saveChequeDetails('${chqNumber}')">💾 Save Changes</button>
+                                <button type="button" class="btn btn-secondary" style="flex: 1; margin-top: 0;" onclick="cancelEdit('${chqNumber}')">❌ Cancel Edit</button>
+                            </div>
+                        </div>
+                        
+                        ${getChequeDocumentSectionsHtml(row, true)}
+                    </form>
+                </div>
+            `;
+            return html;
+        }
+
+
+        // Function to Save the Cheque Details
+        async function saveChequeDetails(chqNumber) {
+            if (APPS_SCRIPT_WEB_APP_URL === 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                alert("CRITICAL ERROR: Please deploy the Google Apps Script and replace the 'APPS_SCRIPT_WEB_APP_URL' variable in the HTML with your actual deployment URL.");
+                return;
+            }
+            
+            const form = document.getElementById('editChequeForm');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (!form) return;
+            
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                // Format YYYY-MM-DD date back to DD/MM/YYYY for Google Sheet consistency
+                if (value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    const parts = value.split('-');
+                    value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                data[key] = value.trim();
+            }
+
+            resultsSection.innerHTML = '<div class="loading">Saving data to Google Sheet...</div>';
+            
+            try {
+                const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data).toString()
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('Cheque details saved successfully! Reloading view...');
+                    cancelEdit(chqNumber); // Reload the search result to show updated data
+                } else {
+                    resultsSection.innerHTML = `<div class="error">Save Failed: ${result.message || 'An unknown error occurred during save.'}</div>`;
+                }
+                
+            } catch (error) {
+                console.error("Save failed:", error);
+                resultsSection.innerHTML = `<div class="error">Network/Server Error: Could not connect to the Apps Script URL. Check console for details.</div>`;
+            }
+        }
+
+
+        // --- Core Application Functions ---
+
+        // Search Form Submission Handler (Single Cheque)
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultsSection = document.getElementById('resultsSection');
+            const exportBtn = document.getElementById('exportBtn');
+            resultsSection.innerHTML = '<div class="loading">Fetching data from Google Sheets...</div>';
+            exportBtn.style.display = 'none';
+            
+            const sheetId = document.getElementById('sheetId').value.trim();
+            const chqNumber = document.getElementById('ChqNumber').value.trim().toUpperCase();
+            
+            if (!sheetId || !chqNumber) {
+                resultsSection.innerHTML = '<div class="error">Please enter a Google Sheet ID and Cheque Number.</div>';
+                return;
+            }
+
+            try {
+                const data = await fetchSheetData(sheetId);
+                
+                // Filter the data for the specific Cheque Number
+                const matchingCheques = data.filter(row => row['Chq Number'] && row['Chq Number'].toUpperCase() === chqNumber);
+
+                lastSearchResults = matchingCheques;
+                
+                if (matchingCheques.length > 0) {
+                    // Render the single cheque in READ-ONLY mode initially
+                    resultsSection.innerHTML = renderChequeForView(matchingCheques[0]);
+                    exportBtn.style.display = 'block';
+                } else {
+                    resultsSection.innerHTML = '<div class="no-results">No cheque found with that number.</div>';
+                    exportBtn.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error("Search failed:", error);
+                resultsSection.innerHTML = `<div class="error">Error fetching data: ${error.message}</div>`;
+                exportBtn.style.display = 'none';
+            }
+        });
+
+        // Handle the Export button click
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            if (lastSearchResults.length > 0) {
+                const chqNumber = lastSearchResults[0]['Chq Number'].trim() || 'SINGLE_CHEQUE';
+                exportToCSV(lastSearchResults, `Cheque_Details_${chqNumber}`);
+            } else {
+                alert("No search results to export.");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('chqSearch').style.display = 'block';
+            document.getElementById('chqSearch').classList.add('active');
+        });
+    </script>
+</body>
+</html>
