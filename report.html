@@ -1750,11 +1750,19 @@ function createChart(canvasId, type, labels, data, title) {
                 const data = await fetchSheetData(sheetId);
                 const resultsSection = document.getElementById('resultsSection');
                 
-                const foundRow = data.find(row => row['Chq Number'] && row['Chq Number'].toUpperCase() === chqNumber.toUpperCase());
+                const foundRows = data.filter(row => 
+   row['Chq Number'] && row['Chq Number'].toUpperCase() === chqNumber.toUpperCase()
+);
                 
-                if (foundRow) {
-                    lastSearchResults = [foundRow]; // For export
-                    resultsSection.innerHTML = generateCheckCardHtml(foundRow);
+              if (foundRows.length > 0) {
+    lastSearchResults = foundRows;
+
+    let html = "";
+    foundRows.forEach(row => {
+        html += generateCheckCardHtml(row);
+    });
+
+    resultsSection.innerHTML = html;
                     document.getElementById('exportBtn').style.display = 'block';
                 } else {
                     resultsSection.innerHTML = `<div class="no-results">Cheque Number <strong>${chqNumber}</strong> not found in the sheet.</div>`;
