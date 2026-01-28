@@ -733,7 +733,7 @@
             const invoiceDetails = row.querySelector('input[name="invoiceDetails"]').value.trim();
             const remarks = row.querySelector('input[name="remarks"]').value.trim();
 
-            if (!chqDate || !chqNumber || chqValue <= 0 || !depositedBank) {
+            if (!chqNumber || !depositedBank) {
                 allItemsValid = false;
             }
 
