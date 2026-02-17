@@ -475,7 +475,7 @@
                 headers.forEach((header, index) => {
                     row[header] = values[index] || '';
                 });
-                
+                row.__rowIndex = i + 1; // 👈 ADD THIS (actual sheet row)
                 data.push(row);
             }
             return data;
@@ -688,7 +688,7 @@
             const html = `
                 <div class="result-card" id="cheque-edit-form-card">
                     <form id="editChequeForm">
-                        <input type="hidden" name="Chq Number" value="${chqNumber}">
+                        <input type="hidden" name="rowIndex" value="${row.__rowIndex}">
                         
                         <div class="result-header" style="flex-wrap: wrap; align-items: flex-start;">
                             <div style="flex-basis: 100%;">
