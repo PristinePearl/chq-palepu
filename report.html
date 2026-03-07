@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheque Details Viewer - Palpeu</title>
+    <title>PALEPU (SS) CHEQUE VIEWER</title>
     <link rel="icon" 
         href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" 
         type="image/png">
@@ -19,6 +19,127 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* ===== KEYFRAME ANIMATIONS ===== */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 8px 20px rgba(79, 70, 229, 0.15);
+            }
+            50% {
+                box-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-5deg) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
         }
 
         body {
@@ -37,30 +158,33 @@
 
         .left-panel {
             width: 350px;
-            background: white;
-            border-right: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+            border-right: 1px solid #fee2e2;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 15px rgba(220, 38, 38, 0.08);
             flex-shrink: 0;
+            animation: slideInLeft 0.6s ease-out;
         }
 
         .right-panel {
             flex: 1;
-            background: #fafbfc;
+            background: linear-gradient(135deg, #fafafa 0%, #fef2f2 50%, #fef6f6 100%);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            animation: slideInRight 0.6s ease-out;
         }
 
         .header {
-            /* Deep Indigo Gradient */
-            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%); 
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #f87171 100%);
             color: white;
-            padding: 15px 20px;
+            padding: 18px 20px;
             text-align: center;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: none;
             flex-shrink: 0;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            animation: slideInDown 0.5s ease-out;
         }
 
         .header-content {
@@ -71,30 +195,34 @@
         }
 
         .company-logo {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             background: rgba(255,255,255,0.2);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: bounce 2s ease-in-out infinite;
         }
 
         .header h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.3rem;
+            font-weight: 700;
             margin: 0;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
+            animation: slideInLeft 0.7s ease-out 0.2s both;
         }
 
         .header .subtitle {
-            font-size: 0.8rem;
-            opacity: 0.8;
-            font-weight: 400;
+            font-size: 0.85rem;
+            opacity: 0.85;
+            font-weight: 500;
             margin-left: 8px;
+            animation: slideInRight 0.7s ease-out 0.3s both;
         }
 
         /* --- Tabs Styling --- */
@@ -103,35 +231,62 @@
             flex-direction: column;
             border-bottom: 1px solid #e2e8f0;
             flex-shrink: 0;
+            background: white;
         }
 
         .tab-button {
-            padding: 12px 20px;
+            padding: 14px 20px;
             text-align: left;
             border: none;
             background: none;
             cursor: pointer;
             font-size: 0.95rem;
-            font-weight: 500;
-            color: #374151;
-            transition: all 0.2s;
+            font-weight: 550;
+            color: #64748b;
+            transition: all 0.25s ease;
             border-left: 4px solid transparent;
+            position: relative;
+            animation: slideInUp 0.5s ease-out backwards;
+        }
+        
+        .tab-button:nth-child(1) { animation-delay: 0.1s; }
+        .tab-button:nth-child(2) { animation-delay: 0.15s; }
+        .tab-button:nth-child(3) { animation-delay: 0.2s; }
+        .tab-button:nth-child(4) { animation-delay: 0.25s; }
+        .tab-button:nth-child(5) { animation-delay: 0.3s; }
+        
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #dc2626, #f97316, #06b6d4);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
         
         /* Highlight active tab */
         .tab-button.active {
-            background: #f1f5f9;
-            font-weight: 600;
-            /* Dark Indigo */
-            color: #3730a3; 
-            /* Indigo */
-            border-left: 4px solid #4f46e5; 
+            background: linear-gradient(90deg, rgba(220, 38, 38, 0.08) 0%, transparent 100%);
+            font-weight: 700;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+            box-shadow: inset 0 0 20px rgba(220, 38, 38, 0.05);
+            animation: slideInLeft 0.4s ease-out;
+        }
+
+        .tab-button.active::after {
+            transform: scaleX(1);
+            animation: slideInRight 0.4s ease-out;
         }
 
         .tab-button:hover:not(.active) {
-            background: #f9fafb;
-            /* Dark Indigo */
-            color: #3730a3; 
+            background: rgba(220, 38, 38, 0.03);
+            color: #dc2626;
+            transform: translateX(4px);
         }
 
         .search-section {
@@ -175,13 +330,22 @@
         }
 
         .form-group input, .form-group select {
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            padding: 11px 14px;
+            border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 0.9rem;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             background: white;
+            font-family: 'Inter', sans-serif;
+            animation: slideInUp 0.4s ease-out backwards;
         }
+        
+        .form-group:nth-child(1) input,
+        .form-group:nth-child(1) select { animation-delay: 0.1s; }
+        .form-group:nth-child(2) input,
+        .form-group:nth-child(2) select { animation-delay: 0.15s; }
+        .form-group:nth-child(3) input,
+        .form-group:nth-child(3) select { animation-delay: 0.2s; }
         
         /* Adjust for radio buttons */
         .form-group input[type="radio"] {
@@ -190,52 +354,75 @@
              padding: 0;
              margin: 0 5px 0 0;
              border: none;
+             animation: none;
         }
         
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            /* Indigo */
-            border-color: #4f46e5; 
-            /* Indigo Shadow */
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); 
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+            background: #fef2f2;
+            transform: translateY(-2px);
         }
 
         .form-group input::placeholder {
-            color: #9ca3af;
-            font-style: italic;
+            color: #cbd5e1;
+            font-style: normal;
         }
 
         .btn {
-            padding: 12px 20px;
-            /* Indigo Gradient */
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); 
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #dc2626 0%, #f87171 50%, #991b1b 100%);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            font-weight: 650;
+            transition: all 0.3s ease;
             margin-top: 10px;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35);
+            animation: slideInUp 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn:active::before {
+            animation: ripple 0.6s ease-out;
         }
 
         .btn:hover {
-            /* Darker Indigo Gradient */
-            background: linear-gradient(135deg, #3730a3 0%, #312e81 100%); 
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #fecaca 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.5);
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         /* NEW BUTTON STYLE FOR EXPORT */
         .btn-secondary {
-            background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
-            margin-top: 5px; 
+            background: linear-gradient(135deg, #ea580c 0%, #fb923c 50%, #f97316 100%);
+            margin-top: 5px;
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
         }
         .btn-secondary:hover {
-            background: linear-gradient(135deg, #4b5563 0%, #1f2937 1f2937%);
+            background: linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #fed7aa 100%);
+            box-shadow: 0 10px 30px rgba(234, 88, 12, 0.5);
+            transform: translateY(-3px);
         }
 
         .results-section {
@@ -251,16 +438,29 @@
             font-style: italic;
             padding: 40px;
             font-size: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4f46e5;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: bounce 1s ease-in-out infinite;
         }
 
         .error {
-            background: #eef2ff; /* Light Blue */
-            color: #4f46e5; /* Indigo */
+            background: #eef2ff;
+            color: #4f46e5;
             padding: 15px;
             border-radius: 8px;
-            border-left: 4px solid #4f46e5; /* Indigo */
+            border-left: 4px solid #4f46e5;
             margin: 10px 0;
             font-size: 0.9rem;
+            animation: slideInDown 0.4s ease-out;
         }
 
         .result-card {
@@ -270,6 +470,22 @@
             padding: 12px;
             margin-bottom: 8px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.4s ease-out backwards;
+        }
+        
+        .result-card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+        
+        .result-card:nth-child(even) {
+            animation-delay: 0.15s;
+        }
+        
+        .result-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateX(4px);
+            border-color: #4f46e5;
         }
 
         .result-header {
@@ -408,104 +624,240 @@
         }
         /* Chart specific styles */
         .chart-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-            justify-content: center;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fef2f2 0%, #fef6f6 50%, #fefce8 100%);
         }
         .chart-box {
             background: white;
-            padding: 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            max-width: 45%; /* Limits size on large screens */
-            min-width: 300px;
-            flex-grow: 1;
-            /* FIX: Add position: relative and a fixed height to stop vertical stretching */
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             position: relative; 
-            height: 400px; 
+            height: 450px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+        
+        .chart-box:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        
+        .chart-box:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        
+        .chart-box:hover {
+            box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+            transform: translateY(-6px);
         }
         /* Full width chart box for trend analysis */
         .chart-box.full-width {
-            max-width: 100%;
-            min-width: 100%;
+            grid-column: 1 / -1;
         }
         .chart-box h3 {
-            font-size: 1rem;
-            /* Dark Indigo */
-            color: #3730a3;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* State-wise Summary Section */
+        .statewise-summary-section {
+            background: white;
+            padding: 25px;
+            margin: 0 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .statewise-summary-section h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 20px 0;
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInLeft 0.6s ease-out 0.1s both;
+        }
+
+        .state-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .state-summary-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            animation: scaleIn 0.5s ease-out backwards;
+        }
+        
+        .state-summary-card:nth-child(1) { animation-delay: 0.1s; }
+        .state-summary-card:nth-child(2) { animation-delay: 0.15s; }
+        .state-summary-card:nth-child(3) { animation-delay: 0.2s; }
+        .state-summary-card:nth-child(4) { animation-delay: 0.25s; }
+        .state-summary-card:nth-child(5) { animation-delay: 0.3s; }
+        .state-summary-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .state-summary-card:hover {
+            box-shadow: 0 12px 35px rgba(79, 70, 229, 0.2);
+            transform: translateY(-8px) scale(1.03);
+            border-color: #4f46e5;
+        }
+
+        .state-card-header {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f97316 100%);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .state-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+        }
+
+        .state-rank {
+            background: rgba(255,255,255,0.25);
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .state-card-body {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .state-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e293b;
         }
         
         /* New styles for Party/Date collapse */
         .summary-card {
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.4s ease-out backwards;
+        }
+        
+        .summary-card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+        
+        .summary-card:nth-child(even) {
+            animation-delay: 0.15s;
+        }
+        
+        .summary-card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            border-color: #4f46e5;
+            transform: translateY(-2px);
         }
         .summary-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
+            padding: 14px 16px;
             cursor: pointer;
-            background: #f9fafb;
-            border-radius: 6px 6px 0 0;
-            transition: background 0.1s;
+            background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s ease;
         }
         .summary-card:hover .summary-header {
-             background: #f3f4f6;
+             background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 100%);
         }
         .summary-details {
             display: none; /* Collapsed by default */
-            padding: 12px;
+            padding: 16px;
             border-top: 1px solid #e5e7eb;
         }
         .summary-header-item {
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 550;
             color: #1f2937;
             flex: 1;
             min-width: 100px;
         }
         .summary-header-item.chq-val {
-            font-weight: 700;
+            font-weight: 750;
             color: #059669;
             flex-grow: 0;
             min-width: 120px;
             text-align: right;
-            padding-right: 15px; /* Adjust spacing from button */
+            padding-right: 15px;
         }
         .summary-header-item .field-label {
-            margin-bottom: 0px;
+            margin-bottom: 2px;
             font-size: 0.65rem;
-            color: #6b7280;
+            color: #94a3b8;
+            font-weight: 600;
         }
         .summary-header-item .field-value {
-             font-size: 0.9rem;
+             font-size: 0.92rem;
         }
         .summary-toggle-btn {
-            background: #4f46e5;
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
             color: white;
             border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
+            padding: 7px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.75rem;
-            font-weight: 600;
-            transition: background 0.2s;
+            font-weight: 650;
+            transition: all 0.2s ease;
             flex-shrink: 0;
-            margin-left: 10px;
+            margin-left: 12px;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
         }
         .summary-toggle-btn:hover {
-            background: #3730a3;
+            background: linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #fb923c 100%);
+            box-shadow: 0 6px 16px rgba(234, 88, 12, 0.45);
+            transform: translateY(-1px);
         }
         .summary-toggle-btn::before {
             content: '+ DETAILS';
@@ -516,64 +868,96 @@
 
         /* --- NEW: Styles for AI KPI Cards --- */
         .kpi-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin: 10px 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fef2f2 0%, #fef6f6 50%, #fefce8 100%);
+            border: none;
+            border-radius: 12px;
+            margin: 20px;
+            box-shadow: none;
         }
         .kpi-card {
-            flex: 1 1 200px;
-            padding: 15px 20px;
-            border-radius: 6px;
+            padding: 20px;
+            border-radius: 10px;
             color: white;
-            min-width: 200px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: scaleIn 0.5s ease-out backwards;
+        }
+        .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.15s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.2s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.25s; }
+        .kpi-card:nth-child(5) { animation-delay: 0.3s; }
+        .kpi-card:nth-child(6) { animation-delay: 0.35s; }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .kpi-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            animation: glow 2s ease-in-out infinite;
         }
         .kpi-card h4 {
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 8px;
-            opacity: 0.8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            opacity: 0.95;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 1;
         }
         .kpi-card .value {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-size: clamp(1.2rem, 2vw, 2rem);
+            font-weight: 800;
             line-height: 1.1;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
         }
         .kpi-card .sub-value {
-            font-size: 0.75rem;
-            font-weight: 400;
-            opacity: 0.9;
-            margin-top: 5px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.92;
+            margin-top: 6px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Specific KPI Colors */
+        /* Specific KPI Colors - Red & Multicolor */
         .kpi-total { 
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); /* Indigo */
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #991b1b 100%);
         }
         .kpi-average {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Emerald Green */
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #00d9ff 100%);
         }
         .kpi-peak {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); /* Orange */
+            background: linear-gradient(135deg, #ea580c 0%, #fb923c 50%, #f97316 100%);
         }
         .kpi-trend-up {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); /* Green */
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%);
         }
         .kpi-trend-down {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); /* Red */
+            background: linear-gradient(135deg, #dc2626 0%, #f87171 50%, #991b1b 100%);
         }
         .kpi-trend-stable {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); /* Gray */
+            background: linear-gradient(135deg, #a855f7 0%, #d946ef 50%, #ec4899 100%);
         }
 
-        /* Status indicator colors */
+        /* Status indicator colors - Multicolor */
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -582,21 +966,20 @@
             margin-right: 6px;
         }
         .status-deposited {
-            background: #10b981; /* Green */
+            background: #10b981;
         }
         .status-pending {
-            background: #f59e0b; /* Orange */
+            background: #f59e0b;
         }
         .status-returned {
-            background: #ef4444; /* Red */
+            background: #ef4444;
         }
         .status-represented {
-            background: #eab308; /* Yellow */
+            background: #8b5cf6;
         }
         .status-blank {
-            background: #8b5cf6; /* Violet */
+            background: #06b6d4;
         }
-        /* --- END NEW KPI STYLES --- */
 
 
         /* Responsive Design */
@@ -673,15 +1056,15 @@
         <div class="left-panel">
             <div class="header">
                 <div class="header-content">
-                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" alt="PRISTINE PEARL PHARMA Logo" class="company-logo">
-                    <h1>PALEPU(SS) CHEQUE VIEWER</h1>
+                    <img src="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" alt="PALEPU (SS) Logo" class="company-logo">
+                    <h1>PALEPU (SS) CHEQUE VIEWER</h1>
                 </div>
             </div>
                     
             <div class="tabs">
                 <button class="tab-button active" onclick="openTab(event, 'chqSearch')">🔍 Single Cheque Search</button>
                 <button class="tab-button" onclick="openTab(event, 'partyDate')">📜 Party/Date Report</button>
-                <button class="tab-button" onclick="openTab(event, 'todayDeposits')">💰 Deposits Report</button>
+                <button class="tab-button" onclick="openTab(event, 'todayDeposits')">💰 Deposits Report - Cheque</button>
                 <button class="tab-button" onclick="openTab(event, 'bankValue')">🏦 Blank Chq Report</button> 
                 <button class="tab-button" onclick="openTab(event, 'depositStatus')">✅ Deposit Status Report</button>
                 <button class="tab-button" onclick="openTab(event, 'graphicalReports')">📊 Graphical Reports</button>
@@ -868,6 +1251,12 @@
                             <label for="aiToDate">To Date (Deposited Date):</label>
                             <input type="date" id="aiToDate">
                         </div>
+<div class="form-group">
+<label for="aiStateSelect">State (Optional):</label>
+<select id="aiStateSelect">
+<option value="">All States</option>
+</select>
+</div>
                         <div class="form-group">
                             <label>Monthly Trend Chart Type:</label>
                             <div style="display: flex; gap: 20px; align-items: center;">
@@ -1259,6 +1648,10 @@
                             <div class="field-label">Cheque Date</div>
                             <div class="field-value">${formatFieldValue(row['Chq Date'], '-')}</div>
                         </div>
+<div class="summary-header-item" style="flex: 0 0 110px;">
+    <div class="field-label">Received Date</div>
+    <div class="field-value">${formatFieldValue(row['Received Date'], '-')}</div>
+</div>
                          <div class="summary-header-item" style="flex: 3;">
                             <div class="field-label">Party Name</div>
                             <div class="field-value">${formatFieldValue(row['Party Name'], 'N/A')}</div>
@@ -1349,19 +1742,19 @@ function createChart(canvasId, type, labels, data, title) {
     if (!ctx) return;
     
     const backgroundColors = [
-        'rgba(79, 70, 229, 0.8)',  // Indigo-500
-        'rgba(16, 185, 129, 0.8)', // Emerald-500
-        'rgba(249, 115, 22, 0.8)', // Orange-500
-        'rgba(239, 68, 68, 0.8)',  // Red-500
-        'rgba(59, 130, 246, 0.8)', // Blue-500
-        'rgba(139, 92, 246, 0.8)', // Violet-500
-        'rgba(244, 63, 94, 0.8)',  // Rose-500
-        'rgba(251, 191, 36, 0.8)', // Amber-500
-        'rgba(20, 184, 166, 0.8)', // Teal-500
-        'rgba(100, 116, 139, 0.8)' // Slate-500
+        'rgba(220, 38, 38, 0.85)',    // Red
+        'rgba(239, 68, 68, 0.85)',    // Red lighter
+        'rgba(248, 113, 113, 0.85)',  // Red light
+        'rgba(234, 88, 12, 0.85)',    // Orange
+        'rgba(249, 115, 22, 0.85)',   // Orange-Red
+        'rgba(59, 130, 246, 0.85)',   // Blue
+        'rgba(6, 182, 212, 0.85)',    // Cyan
+        'rgba(16, 185, 129, 0.85)',   // Emerald
+        'rgba(251, 191, 36, 0.85)',   // Amber
+        'rgba(168, 85, 247, 0.85)'    // Purple
     ];
 
-    const borderColors = backgroundColors.map(color => color.replace('0.8', '1'));
+    const borderColors = backgroundColors.map(color => color.replace('0.85', '1'));
     
     let dataset = {};
 
@@ -1370,18 +1763,35 @@ function createChart(canvasId, type, labels, data, title) {
             label: 'Cheque Value (₹)',
             data: data,
             backgroundColor: backgroundColors,
-            borderColor: borderColors,
-            borderWidth: 1
+            borderColor: '#ffffff',
+            borderWidth: 3
         };
-    } else { // Bar and Line
-         dataset = {
+    } else if (type === 'bar') {
+        dataset = {
             label: 'Cheque Value (₹)',
             data: data,
-            backgroundColor: type === 'bar' ? backgroundColors[0] : 'transparent',
+            backgroundColor: backgroundColors[0],
             borderColor: borderColors[0],
-            borderWidth: 2,
-            fill: type === 'line' ? 'start' : false,
-            tension: type === 'line' ? 0.4 : 0
+            borderWidth: 1,
+            borderRadius: 6,
+            fill: false,
+            tension: 0
+        };
+    } else { // Line
+        dataset = {
+            label: 'Cheque Value (₹)',
+            data: data,
+            backgroundColor: 'rgba(220, 38, 38, 0.15)',
+            borderColor: borderColors[0],
+            borderWidth: 3,
+            fill: true,
+            tension: 0.5,
+            pointRadius: 5,
+            pointBackgroundColor: borderColors[0],
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: 'rgba(239, 68, 68, 1)'
         };
     }
 
@@ -1393,22 +1803,29 @@ function createChart(canvasId, type, labels, data, title) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Essential for fixed height chart-box
+            maintainAspectRatio: false,
             plugins: {
                 title: {
-                    display: true,
-                    text: title,
-                    font: { size: 16, weight: 'bold', family: 'Inter' },
-                    color: '#1f2937'
+                    display: false
                 },
                 legend: {
                     display: type === 'doughnut' || type === 'bar',
                     position: type === 'doughnut' ? 'right' : 'top',
                     labels: {
-                        font: { family: 'Inter' }
+                        font: { family: 'Inter', size: 12, weight: 500 },
+                        padding: 15,
+                        boxPadding: 10
                     }
                 },
                 tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    titleFont: { family: 'Inter', size: 13, weight: 600 },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    padding: 12,
+                    borderRadius: 8,
+                    displayColors: true,
+                    borderColor: 'rgba(255,255,255,0.2)',
+                    borderWidth: 1,
                     callbacks: {
                         label: function(context) {
                             let label = context.dataset.label || '';
@@ -1416,10 +1833,8 @@ function createChart(canvasId, type, labels, data, title) {
                                 label += ': ';
                             }
                             if (context.parsed !== null && context.parsed !== undefined) {
-                                // For bar/line charts, use context.parsed.y
-                                // For doughnut charts, use context.parsed
                                 const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed;
-                                label += '₹' + value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                label += '₹' + value.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
                             }
                             return label;
                         }
@@ -1429,21 +1844,31 @@ function createChart(canvasId, type, labels, data, title) {
             scales: (type !== 'doughnut' ? {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false
+                    },
                     title: {
                         display: true,
                         text: 'Value (₹)',
-                        font: { family: 'Inter' }
+                        font: { family: 'Inter', size: 12, weight: 600 }
                     },
                     ticks: {
                         callback: function(value, index, ticks) {
-                            return '₹' + (value / 100000).toFixed(0) + ' L'; // Format to Lakhs
+                            return '₹' + (value / 100000).toFixed(0) + 'L';
                         },
-                        font: { family: 'Inter' }
+                        font: { family: 'Inter', size: 11 },
+                        color: '#64748b'
                     }
                 },
                 x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
                     ticks: {
-                        font: { family: 'Inter' }
+                        font: { family: 'Inter', size: 11 },
+                        color: '#64748b'
                     }
                 }
             } : {}) 
@@ -1694,18 +2119,70 @@ function createChart(canvasId, type, labels, data, title) {
             }
             
             const clearedRatio = (depositedCount / count) * 100;
+// ---------- KPI REMARK ENGINE ----------
+let totalRemark = totalValue > 500000 ? "Excellent volume"
+    : totalValue > 200000 ? "Healthy collections"
+    : "Low collection volume";
 
+let avgRemark = averageValue > 50000 ? "High ticket cheques"
+    : averageValue > 20000 ? "Normal range"
+    : "Small cheque values";
+
+let peakRemark = peakDayValue > averageValue*2
+    ? "Spike detected"
+    : "Stable flow";
+
+let trendRemark = trendStatus === "Rising"
+    ? "Growth improving"
+    : trendStatus === "Declining"
+    ? "Needs attention"
+    : "Stable performance";
+
+let clearRemark = clearedRatio > 85
+    ? "Excellent clearance"
+    : clearedRatio > 60
+    ? "Average clearance"
+    : "Risk zone";
+// ---------------------------------------
 
             return {
-                totalValue: totalValue.toFixed(2),
-                count: count,
-                averageValue: averageValue.toFixed(2),
-                peakDayValue: peakDayValue.toFixed(2),
-                trendStatus: trendStatus,
-                trendValue: trendValue.toFixed(2),
-                trendColor: trendColor,
-                clearedRatio: clearedRatio.toFixed(2)
-            };
+    totalValue: totalValue.toFixed(2),
+    count: count,
+    averageValue: averageValue.toFixed(2),
+    peakDayValue: peakDayValue.toFixed(2),
+    trendStatus: trendStatus,
+    trendValue: trendValue.toFixed(2),
+    trendColor: trendColor,
+    clearedRatio: clearedRatio.toFixed(2),
+
+    // -------- KPI REMARKS --------
+    totalRemark:
+        totalValue > 500000 ? "Excellent business volume" :
+        totalValue > 200000 ? "Healthy collection" :
+        "Low collection",
+
+    avgRemark:
+        averageValue > 50000 ? "High value cheques" :
+        averageValue > 20000 ? "Normal cheque size" :
+        "Small ticket cheques",
+
+    peakRemark:
+        peakDayValue > averageValue * 2
+        ? "Unusual spike detected"
+        : "Normal daily pattern",
+
+    trendRemark:
+        trendStatus === "Rising"
+        ? "Performance improving"
+        : trendStatus === "Declining"
+        ? "Drop detected"
+        : "Stable trend",
+
+    clearRemark:
+        clearedRatio > 85 ? "Excellent clearance rate"
+        : clearedRatio > 60 ? "Moderate clearance"
+        : "High risk — many pending/returns"
+};
         }
 
         // --- UI Action Handlers ---
@@ -1732,6 +2209,9 @@ function createChart(canvasId, type, labels, data, title) {
             document.getElementById('exportAIReportBtn').style.display = 'none';
         }
 
+
+
+
         // --- REPORT GENERATION FUNCTIONS ---
 
         // 1. Single Cheque Search
@@ -1753,8 +2233,7 @@ function createChart(canvasId, type, labels, data, title) {
                 const foundRows = data.filter(row => 
    row['Chq Number'] && row['Chq Number'].toUpperCase() === chqNumber.toUpperCase()
 );
-                
-              if (foundRows.length > 0) {
+               if (foundRows.length > 0) {
     lastSearchResults = foundRows;
 
     let html = "";
@@ -1763,7 +2242,6 @@ function createChart(canvasId, type, labels, data, title) {
     });
 
     resultsSection.innerHTML = html;
-                    document.getElementById('exportBtn').style.display = 'block';
                 } else {
                     resultsSection.innerHTML = `<div class="no-results">Cheque Number <strong>${chqNumber}</strong> not found in the sheet.</div>`;
                     lastSearchResults = [];
@@ -1907,15 +2385,48 @@ function createChart(canvasId, type, labels, data, title) {
                         return new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-'));
                     });
 
-                    let html = `<div class="result-card" style="margin-bottom: 20px; border-left: 5px solid #4f46e5; padding: 15px;">
-                        <h2 style="font-size: 1.1rem; color: #4f46e5;">DEPOSITS REPORT SUMMARY</h2>
-                        <p style="font-size: 0.9rem; margin-top: 5px; color: #1f2937;">
-                            Date Range: <strong>${fromDate} to ${toDate}</strong> | 
-                            Total Days: <strong>${sortedDates.length}</strong> | 
-                            Total Cheques: <strong>${filteredData.length}</strong>
-                        </p>
-                    </div>`;
+                    // CALCULATE GRAND TOTALS FIRST (before rendering HTML)
+                    sortedDates.forEach((date) => {
+                        const dateData = groupedByDate[date];
+                        dateData.forEach(row => {
+                            const valueStr = row['Chq Value (₹)'].replace(/[^0-9.-]+/g,"") || '0';
+                            grandTotalValue += parseFloat(valueStr);
+                            grandTotalCount += 1;
+                        });
+                    });
 
+                   let html = `
+<div class="result-card" style="margin-bottom:20px; background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%); border:2px solid #059669; padding:15px;">
+
+
+<div class="result-card" style="margin-bottom:20px; border-left:5px solid #4f46e5; padding:15px;">
+    <h2 style="font-size:1.1rem; color:#4f46e5;">DEPOSITS REPORT SUMMARY</h2>
+    <p style="font-size:0.9rem; margin-top:5px; color:#1f2937;">
+        Date Range: <strong>${fromDate} to ${toDate}</strong> | 
+        Total Days: <strong>${sortedDates.length}</strong> | 
+        Total Cheques: <strong>${filteredData.length}</strong>
+    </p>
+</div>
+
+
+    <h2 style="font-size:1.1rem; color:#059669;">GRAND TOTAL SUMMARY</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+        <div>
+            <div class="field-label">Total Days</div>
+            <div class="field-value" style="font-size:1.1rem; font-weight:700;">${sortedDates.length} Days</div>
+        </div>
+        <div>
+            <div class="field-label">Total Cheques</div>
+            <div class="field-value" style="font-size:1.1rem; font-weight:700;">${filteredData.length} Cheques</div>
+        </div>
+        <div>
+           <div class="field-label">Grand Total Value</div>
+                                    <div class="field-value" style="font-size: 1.3rem; font-weight: 700; color: #059669;">₹${grandTotalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </div>
+        </div>
+    </div>
+</div>
+`;
                     // Create expandable cards for each date
                     sortedDates.forEach((date, dateIndex) => {
                         const dateData = groupedByDate[date];
@@ -1927,9 +2438,6 @@ function createChart(canvasId, type, labels, data, title) {
                             const valueStr = row['Chq Value (₹)'].replace(/[^0-9.-]+/g,"") || '0';
                             dateTotalValue += parseFloat(valueStr);
                         });
-
-                        grandTotalValue += dateTotalValue;
-                        grandTotalCount += dateChequeCount;
 
                         const dateId = `date-${dateIndex}`;
                         const dateDisplay = date === 'No Date' ? 'No Deposit Date' : date;
@@ -1961,26 +2469,7 @@ function createChart(canvasId, type, labels, data, title) {
                         `;
                     });
 
-                    // Add grand total summary
-                    html += `
-                        <div class="result-card" style="margin-top: 20px; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #059669; padding: 15px;">
-                            <h2 style="font-size: 1.1rem; color: #059669;">GRAND TOTAL SUMMARY</h2>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                <div>
-                                    <div class="field-label">Total Days</div>
-                                    <div class="field-value" style="font-size: 1.1rem; font-weight: 700;">${sortedDates.length} Days</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">Total Cheques</div>
-                                    <div class="field-value" style="font-size: 1.1rem; font-weight: 700;">${grandTotalCount} Cheques</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">Grand Total Value</div>
-                                    <div class="field-value" style="font-size: 1.3rem; font-weight: 700; color: #059669;">₹${grandTotalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+
 
                     resultsSection.innerHTML = html;
                     document.getElementById('exportTodayBtn').style.display = 'block';
@@ -2178,7 +2667,7 @@ function createChart(canvasId, type, labels, data, title) {
                     // --- Chart 2: Value by State ---
                     const stateData = aggregateData(filteredData, 'State');
                     const stateChartData = stateData.aggregatedArray.slice(0, 10); // Top 10
-                    const stateChartType = (stateChartData.length > 5) ? 'bar' : 'doughnut'; // Use bar for many states, doughnut for few
+                    const stateChartType = chartTypeParty; // Use bar for many states, doughnut for few
                     html += `
                         <div class="chart-box">
                             <h3>Cheque Value by Top States</h3>
@@ -2229,107 +2718,7 @@ function createChart(canvasId, type, labels, data, title) {
         });
 
 
-        // 7. AI & Trend Analysis
-        document.getElementById('aiAnalysisForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-            destroyCharts(); // Ensure charts are cleared
 
-            const sheetId = document.getElementById('sheetId').value.trim();
-            const fromDate = document.getElementById('aiFromDate').value;
-            const toDate = document.getElementById('aiToDate').value;
-            // IMPORTANT: The dateKey here determines which date column is used for filtering.
-            // Based on user request to use DEPOSITED DATE in the UI, we assume the underlying
-            // logic should also filter by it.
-            const dateKey = 'Deposited Date'; 
-            const trendChartType = document.querySelector('input[name="trendChartType"]:checked').value;
-
-            try {
-                const data = await fetchSheetData(sheetId);
-                
-                // Filter by Deposited Date only
-                const filteredData = filterChequeData(data, fromDate, toDate, dateKey, null, null, null, null, null);
-                
-                const resultsSection = document.getElementById('resultsSection');
-                
-                if (filteredData.length > 0) {
-                    lastFilterResults = filteredData;
-                    let html = '';
-                    
-                    // --- KPI Cards ---
-                    const kpis = calculateAIKpis(filteredData);
-                    const totalValueFormatted = parseFloat(kpis.totalValue).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const avgValueFormatted = parseFloat(kpis.averageValue).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const peakValueFormatted = parseFloat(kpis.peakDayValue).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const trendValueFormatted = parseFloat(kpis.trendValue).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: 'always' });
-                    
-                    html += `
-                        <h2 style="font-size: 1.2rem; color: #1f2937; padding: 15px 20px 0;">Key Performance Indicators</h2>
-                        <div class="kpi-container">
-                            <div class="kpi-card kpi-total">
-                                <h4>Total Value (In Filter)</h4>
-                                <div class="value">₹${totalValueFormatted}</div>
-                                <div class="sub-value">${kpis.count} Cheques</div>
-                            </div>
-                            <div class="kpi-card kpi-average">
-                                <h4>Average Cheque Value</h4>
-                                <div class="value">₹${avgValueFormatted}</div>
-                                <div class="sub-value">Across ${kpis.count} Cheques</div>
-                            </div>
-                            <div class="kpi-card kpi-peak">
-                                <h4>Peak Single Day Value</h4>
-                                <div class="value">₹${peakValueFormatted}</div>
-                                <div class="sub-value">Highest value aggregated on a single day.</div>
-                            </div>
-                             <div class="kpi-card ${kpis.trendColor}">
-                                <h4>Value Trend (First Half vs Second Half)</h4>
-                                <div class="value">${kpis.trendStatus}</div>
-                                <div class="sub-value">Change: ₹${trendValueFormatted}</div>
-                            </div>
-                            <div class="kpi-card ${kpis.clearedRatio > 80 ? 'kpi-average' : 'kpi-trend-stable'}">
-                                <h4>Clearing Ratio (Deposited)</h4>
-                                <div class="value">${kpis.clearedRatio}%</div>
-                                <div class="sub-value">${kpis.clearedRatio > 80 ? 'Excellent' : 'Needs Review'}</div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // --- Trend Chart ---
-                    const trendData = getMonthlyTrendData(filteredData, dateKey);
-                    
-                    html += `
-                         <div style="padding: 10px 20px;">
-                            <h2 style="font-size: 1.2rem; color: #1f2937; padding-bottom: 10px; margin-top: 10px;">Monthly Value Trend Analysis</h2>
-                            <div class="chart-box full-width" style="height: 450px;">
-                                <h3>Value (₹) Trend over Time (Grouped by Month)</h3>
-                                <canvas id="monthlyTrendChart"></canvas>
-                            </div>
-                        </div>
-                    `;
-                    
-                    
-                    resultsSection.innerHTML = html;
-                    
-                    // Render Chart after DOM update
-                    createChart('monthlyTrendChart', trendChartType, 
-                                trendData.labels, 
-                                trendData.data, 
-                                'Monthly Deposited Value Trend');
-
-                    document.getElementById('exportAIReportBtn').style.display = 'block';
-                } else {
-                    resultsSection.innerHTML = '<div class="no-results">No cheques found matching the criteria for AI & Trend Analysis.</div>';
-                    document.getElementById('exportAIReportBtn').style.display = 'none';
-                }
-                
-            } catch (err) {
-                showError(err.message);
-            }
-        });
-
-        document.getElementById('exportAIReportBtn').addEventListener('click', function() {
-            exportToCSV(lastFilterResults, 'ai_trend_report_raw_data');
-        });
 
 
         // --- Populating Dropdowns on Load ---
@@ -2458,6 +2847,248 @@ function createChart(canvasId, type, labels, data, title) {
             document.getElementById('depositFromDate').value = todayFormatted;
             document.getElementById('depositToDate').value = todayFormatted;
         });
+
+function populateAIStates(data){
+    const select=document.getElementById("aiStateSelect");
+    if(!select) return;
+
+    const states=[...new Set(
+        data.map(r=>r["State"])
+            .filter(s=>s && s.trim()!=="")
+    )].sort();
+
+    select.innerHTML='<option value="">All States</option>';
+
+    states.forEach(state=>{
+        const opt=document.createElement("option");
+        opt.value=state;
+        opt.textContent=state;
+        select.appendChild(opt);
+    });
+}
+
+document.getElementById('aiAnalysisForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    showLoading();
+    destroyCharts();
+
+    const sheetId = document.getElementById('sheetId').value.trim();
+    const fromDate = document.getElementById('aiFromDate').value;
+    const toDate = document.getElementById('aiToDate').value;
+    const dateKey = 'Deposited Date';
+    const trendChartType = document.querySelector('input[name="trendChartType"]:checked').value;
+const state = document.getElementById('aiStateSelect').value;
+
+    try{
+        const data = await fetchSheetData(sheetId);
+populateAIStates(data);
+
+        const filteredData = filterChequeData(
+            data,
+            fromDate,
+            toDate,
+            dateKey,
+            null,
+            state,
+            null,
+            null,
+            null
+        );
+
+        const resultsSection = document.getElementById('resultsSection');
+
+        if(filteredData.length===0){
+            resultsSection.innerHTML = `<div class="no-results">No data found.</div>`;
+            return;
+        }
+
+        lastFilterResults = filteredData;
+
+        const kpis = calculateAIKpis(filteredData);
+
+const stateData = aggregateData(filteredData, 'State');
+
+const topState = stateData.aggregatedArray[0] || { key:'N/A', value:0 };
+
+const lowestState =
+stateData.aggregatedArray[stateData.aggregatedArray.length - 1] || { key:'N/A', value:0 };
+
+        const trend = getMonthlyTrendData(filteredData,dateKey);
+        const stateAgg = aggregateData(filteredData,'State');
+
+
+        let html = `
+<div class="kpi-container">
+
+<div class="kpi-card kpi-average">
+<h4>Average Value</h4>
+<div class="value" data-target="${kpis.averageValue}">₹0</div>
+<div class="sub-value">${kpis.avgRemark}</div>
+</div>
+
+<div class="kpi-card kpi-peak">
+<h4>Peak Day Value</h4>
+<div class="value" data-target="${kpis.peakDayValue}">₹0</div>
+<div class="sub-value">${kpis.peakRemark}</div>
+</div>
+
+<div class="kpi-card ${kpis.trendColor}">
+<h4>Performance</h4>
+<div class="value">${kpis.trendStatus}</div>
+<div class="sub-value">₹${Number(kpis.trendValue).toLocaleString('en-IN')}</div>
+<div class="sub-value">${kpis.trendRemark}</div>
+</div>
+
+<div class="kpi-card kpi-trend-stable">
+<h4>Cleared Ratio</h4>
+<div class="value">${kpis.clearedRatio}%</div>
+<div class="sub-value">${kpis.clearRemark}</div>
+</div>
+
+<div class="kpi-card kpi-total">
+<h4>Total Value</h4>
+<div class="value" data-target="${kpis.totalValue}">₹0</div>
+<div class="sub-value">${kpis.count} Cheques</div>
+<div class="sub-value">${kpis.totalRemark}</div>
+</div>
+
+</div>
+
+<div class="statewise-summary-section">
+<h3>State-wise Summary</h3>
+<div class="state-cards-container">
+${stateData.aggregatedArray.map((state, index) => {
+    const stateRecords = filteredData.filter(r => r.State === state.key);
+    return `
+    <div class="state-summary-card">
+        <div class="state-card-header">
+            <div class="state-name">${state.key}</div>
+            <div class="state-rank">#${index + 1}</div>
+        </div>
+        <div class="state-card-body">
+            <div class="state-metric">
+                <span class="metric-label">Total Value</span>
+                <span class="metric-value">₹${state.value.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="state-metric">
+                <span class="metric-label">Cheques</span>
+                <span class="metric-value">${stateRecords.length}</span>
+            </div>
+        </div>
+    </div>
+    `;
+}).join('')}
+</div>
+</div>
+
+<div class="chart-container">
+            <div class="chart-box full-width">
+                <h3>Monthly Trend</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <div class="chart-box full-width">
+                <h3>State Comparison</h3>
+                <canvas id="stateChart"></canvas>
+            </div>
+        </div>
+`;
+
+        resultsSection.innerHTML = html;
+animateKPIValues();
+
+        requestAnimationFrame(()=>{
+
+            createChart(
+                'trendChart',
+                trendChartType,
+                trend.labels,
+                trend.data,
+                'Monthly Trend'
+            );
+
+            createChart(
+                'stateChart',
+                trendChartType,
+                stateAgg.aggregatedArray.map(x=>x.key),
+                stateAgg.aggregatedArray.map(x=>x.value),
+                'State Comparison'
+            );
+
+        });
+async function loadStatesToAllDropdowns(){
+
+    const sheetId=document.getElementById("sheetId").value.trim();
+    if(!sheetId) return;
+
+    const data=await fetchSheetData(sheetId);
+
+    const states=[...new Set(
+        data.map(r=>r["State"]).filter(Boolean)
+    )].sort();
+
+    const dropdownIds=[
+        "stateSelectParty",
+        "chartStateSelect",
+        "aiStateSelect"
+    ];
+
+    dropdownIds.forEach(id=>{
+        const select=document.getElementById(id);
+        if(!select) return;
+
+        select.innerHTML='<option value="">All States</option>';
+
+        states.forEach(state=>{
+            const opt=document.createElement("option");
+            opt.value=state;
+            opt.textContent=state;
+            select.appendChild(opt);
+        });
+    });
+}
+window.addEventListener("load",loadStatesToAllDropdowns);
+
+    }catch(err){
+        showError(err.message);
+    }
+});
+
+
+function animateKPIValues(){
+
+document.querySelectorAll('.kpi-card .value').forEach(counter=>{
+
+const target = parseFloat(counter.dataset.target);
+if(isNaN(target)) return;
+
+let count = 0;
+const speed = target / 80;
+
+function update(){
+
+count += speed;
+
+if(count < target){
+
+counter.innerText = "₹" + Math.floor(count).toLocaleString("en-IN");
+
+requestAnimationFrame(update);
+
+}else{
+
+counter.innerText = "₹" + Number(target).toLocaleString("en-IN");
+
+}
+
+}
+
+update();
+
+});
+
+}
+
     </script>
 </body>
 </html>
