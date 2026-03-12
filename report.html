@@ -1186,6 +1186,14 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="depositChqFromDate">CHQ Date — From (Optional):</label>
+                            <input type="date" id="depositChqFromDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="depositChqToDate">CHQ Date — To (Optional):</label>
+                            <input type="date" id="depositChqToDate">
+                        </div>
+                        <div class="form-group">
                             <label for="remarksKeyword">Remarks Keyword (e.g., BOUNCE, CLEAR):</label>
                             <input type="text" id="remarksKeyword" placeholder="Optional Keyword">
                         </div>
@@ -2573,6 +2581,8 @@ let clearRemark = clearedRatio > 85
             const status = document.getElementById('depositStatusSelect').value;
             const remarksKeyword = document.getElementById('remarksKeyword').value;
             const depositedBank = document.getElementById('depositedBankSelect').value;
+            const chqFromDate = document.getElementById('depositChqFromDate').value;
+            const chqToDate   = document.getElementById('depositChqToDate').value;
 
             if (!status) {
                 showError("Please select a Deposit Status.");
@@ -2582,17 +2592,111 @@ let clearRemark = clearedRatio > 85
             try {
                 const data = await fetchSheetData(sheetId);
                 
-                // Filter by Status, Remarks Keyword, and Deposited Bank
-                const filteredData = filterChequeData(data, null, null, 'Chq Date', null, null, depositedBank, status, remarksKeyword);
+                // Filter by Status, CHQ Date range, Remarks Keyword, and Deposited Bank
+                const filteredData = filterChequeData(data, chqFromDate || null, chqToDate || null, 'Chq Date', null, null, depositedBank, status, remarksKeyword);
                 
                 const resultsSection = document.getElementById('resultsSection');
                 
                 if (filteredData.length > 0) {
                      lastFilterResults = filteredData;
-                     
-                     // Generate a table for the results with cheque number
-                     let tableHtml = `<h3 style="font-size: 1.1rem; margin-bottom: 10px; color: #1f2937;">${status} Cheques Report (${filteredData.length} Cheques)</h3>`;
-                     
+
+                     // ── Sort by CHQ Date ascending (DD/MM/YYYY) ───────────────
+                     filteredData.sort((a, b) => {
+                         const toMs = d => {
+                             if (!d) return Infinity;
+                             const parts = String(d).split('/');
+                             if (parts.length !== 3) return Infinity;
+                             return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                         };
+                         return toMs(a['Chq Date']) - toMs(b['Chq Date']);
+                     });
+
+                     // ── Summary KPIs ──────────────────────────────────────────
+                     const totalCheques  = filteredData.length;
+                     const totalValue    = filteredData.reduce((s, r) => s + (parseFloat(r['Chq Value (₹)']) || 0), 0);
+                     const avgValue      = totalValue / totalCheques;
+                     const maxRow        = filteredData.reduce((best, r) => (parseFloat(r['Chq Value (₹)']) || 0) > (parseFloat(best['Chq Value (₹)']) || 0) ? r : best, filteredData[0]);
+                     const maxValue      = parseFloat(maxRow['Chq Value (₹)']) || 0;
+                     const uniqueParties = new Set(filteredData.map(r => r['Party Name']).filter(Boolean)).size;
+                     const chqDates      = filteredData.map(r => r['Chq Date']).filter(Boolean);
+                     const oldestDate    = chqDates[0] || 'N/A';
+                     const newestDate    = chqDates[chqDates.length - 1] || 'N/A';
+
+                     // Status-specific extra card
+                     let extraCardHtml = '';
+                     if (status === 'Deposited') {
+                         const uniqueBanks = new Set(filteredData.map(r => r['Deposited Bank (Our Bank)']).filter(Boolean)).size;
+                         extraCardHtml = `
+                         <div class="kpi-card kpi-trend-stable">
+                             <h4>🏦 Deposited Banks</h4>
+                             <div class="value">${uniqueBanks}</div>
+                             <div class="sub-value">Unique banks used</div>
+                         </div>`;
+                     } else if (status === 'Returned') {
+                         const withReturnRemarks = filteredData.filter(r => r['Return Remarks'] && r['Return Remarks'].trim()).length;
+                         extraCardHtml = `
+                         <div class="kpi-card kpi-trend-down">
+                             <h4>📋 With Return Remarks</h4>
+                             <div class="value">${withReturnRemarks}</div>
+                             <div class="sub-value">of ${totalCheques} returned</div>
+                         </div>`;
+                     } else if (status === 'Pending') {
+                         const withRemarks = filteredData.filter(r => r['Remarks'] && r['Remarks'].trim()).length;
+                         extraCardHtml = `
+                         <div class="kpi-card kpi-trend-up">
+                             <h4>📝 With Remarks</h4>
+                             <div class="value">${withRemarks}</div>
+                             <div class="sub-value">of ${totalCheques} pending</div>
+                         </div>`;
+                     }
+
+                     const statusBadgeColor = status === 'Deposited' ? '#10b981' : status === 'Returned' ? '#ef4444' : '#f59e0b';
+
+                     // ── Build HTML ────────────────────────────────────────────
+                     let tableHtml = `
+                     <div style="padding: 18px 18px 0;">
+                         <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                             <h3 style="font-size:1.15rem; font-weight:700; color:#1f2937; margin:0;">
+                                 Deposit Status Report
+                             </h3>
+                             <span style="background:${statusBadgeColor}; color:white; font-size:0.75rem; font-weight:700;
+                                          padding:3px 10px; border-radius:20px; letter-spacing:0.04em;">
+                                 ${status.toUpperCase()}
+                             </span>
+                         </div>
+
+                         <!-- Summary KPI Cards -->
+                         <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:14px; margin-bottom:20px;">
+
+                             <div class="kpi-card kpi-total">
+                                 <h4>🧾 Total Cheques</h4>
+                                 <div class="value">${totalCheques}</div>
+                                 <div class="sub-value">${uniqueParties} unique ${uniqueParties === 1 ? 'party' : 'parties'}</div>
+                             </div>
+
+                             <div class="kpi-card" style="background:linear-gradient(135deg,#4f46e5 0%,#6366f1 50%,#3730a3 100%); padding:20px; border-radius:10px; color:white; box-shadow:0 8px 20px rgba(0,0,0,0.12); transition:all 0.3s ease; position:relative; overflow:hidden; animation:scaleIn 0.5s ease-out 0.15s backwards;">
+                                 <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:12px; opacity:0.95; text-transform:uppercase; letter-spacing:0.05em;">💰 Total Value</h4>
+                                 <div class="value" style="font-size:clamp(1rem,1.6vw,1.5rem);">₹${totalValue.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                                 <div class="sub-value">Avg ₹${avgValue.toLocaleString('en-IN', {minimumFractionDigits:0, maximumFractionDigits:0})} / cheque</div>
+                             </div>
+
+                             <div class="kpi-card kpi-peak">
+                                 <h4>🏆 Highest Cheque</h4>
+                                 <div class="value" style="font-size:clamp(1rem,1.6vw,1.5rem);">₹${maxValue.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                                 <div class="sub-value">${maxRow['Party Name'] || 'N/A'}</div>
+                             </div>
+
+                             <div class="kpi-card" style="background:linear-gradient(135deg,#06b6d4 0%,#0891b2 50%,#00d9ff 100%); padding:20px; border-radius:10px; color:white; box-shadow:0 8px 20px rgba(0,0,0,0.12); transition:all 0.3s ease; position:relative; overflow:hidden; animation:scaleIn 0.5s ease-out 0.25s backwards;">
+                                 <h4 style="font-size:0.8rem; font-weight:600; margin-bottom:12px; opacity:0.95; text-transform:uppercase; letter-spacing:0.05em;">📅 CHQ Date Range</h4>
+                                 <div class="value" style="font-size:1rem; line-height:1.4;">${oldestDate}</div>
+                                 <div class="sub-value">to ${newestDate}</div>
+                             </div>
+
+                             ${extraCardHtml}
+
+                         </div>
+                     </div>`;
+
                      // Simplify data for the table view - INCLUDING CHEQUE NUMBER
                      const simplifiedData = filteredData.map(row => ({
                          'Chq No.': row['Chq Number'],
@@ -2606,7 +2710,7 @@ let clearRemark = clearedRatio > 85
                          'Return Remarks': formatFieldValue(row['Return Remarks']),
                      }));
 
-                     tableHtml += createSimpleTableHtml(simplifiedData, status + ' Cheques');
+                     tableHtml += `<div style="padding: 0 18px 18px;">${createSimpleTableHtml(simplifiedData, status + ' Cheques')}</div>`;
 
                      resultsSection.innerHTML = tableHtml;
                      document.getElementById('exportDepositBtn').style.display = 'block';
