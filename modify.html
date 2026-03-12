@@ -21,7 +21,7 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #fef2f2 0%, #f5f3ff 50%, #fff7ed 100%);
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -36,28 +36,28 @@
         .left-panel {
             width: 350px;
             background: white;
-            border-right: 1px solid #e2e8f0;
+            border-right: 2px solid #fca5a5;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 14px rgba(220,38,38,0.08);
             flex-shrink: 0;
         }
 
         .right-panel {
             flex: 1;
-            background: #fafbfc;
+            background: transparent;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
+        /* ── Red → Purple → Orange gradient header ── */
         .header {
-            /* Deep Indigo Gradient */
-            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%); 
+            background: linear-gradient(135deg, #DC2626 0%, #7C3AED 55%, #EA580C 100%);
             color: white;
             padding: 15px 20px;
             text-align: center;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: none;
             flex-shrink: 0;
         }
 
@@ -71,7 +71,7 @@
         .company-logo {
             width: 32px;
             height: 32px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.25);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -88,11 +88,11 @@
             letter-spacing: -0.01em;
         }
 
-        /* --- Tabs Styling --- */
+        /* ── Tabs ── */
         .tabs {
             display: flex;
             flex-direction: column;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #fca5a5;
             flex-shrink: 0;
         }
 
@@ -105,34 +105,35 @@
             font-weight: 500;
             color: #374151;
             border-left: 4px solid transparent;
+            cursor: pointer;
         }
-        
+
         .tab-button.active {
-            background: #f1f5f9;
+            background: #fef2f2;
             font-weight: 600;
-            color: #3730a3; 
-            border-left: 4px solid #4f46e5; 
+            color: #DC2626;
+            border-left: 4px solid #DC2626;
         }
 
         .search-section {
             padding: 20px;
-            background: #f8fafc;
+            background: #fdf8f8;
             flex: 1;
-            overflow-y: auto; 
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
-        /* --- Forms & Inputs --- */
+
+        /* ── Forms & Inputs ── */
         .search-form {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 0; 
+            margin-bottom: 0;
         }
 
         .form-group {
@@ -150,22 +151,23 @@
 
         .form-group input, .form-group textarea {
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #fca5a5;
             border-radius: 8px;
             font-size: 0.9rem;
             transition: all 0.2s ease;
             background: white;
         }
-        
+
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #4f46e5; 
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); 
+            border-color: #DC2626;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18);
         }
 
+        /* Search button — Red */
         .btn {
             padding: 12px 20px;
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); 
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -177,30 +179,31 @@
         }
 
         .btn:hover {
-            background: linear-gradient(135deg, #3730a3 0%, #312e81 100%); 
+            background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
             transform: translateY(-1px);
         }
 
-        /* NEW BUTTON STYLE FOR SAVE/MODIFY */
+        /* Save button — Orange */
         .btn-save {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); /* Orange for Modify/Save */
+            background: linear-gradient(135deg, #EA580C 0%, #c2410c 100%);
         }
         .btn-save:hover {
-            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
         }
-        /* NEW BUTTON STYLE FOR SECONDARY ACTION (CANCEL/EXPORT) */
+
+        /* Cancel/Export button — Purple */
         .btn-secondary {
-            background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
-            margin-top: 5px; 
+            background: linear-gradient(135deg, #7C3AED 0%, #5b21b6 100%);
+            margin-top: 5px;
         }
         .btn-secondary:hover {
-            background: linear-gradient(135deg, #4b5563 0%, #1f2937 1f2937%);
+            background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
         }
 
         .results-section {
             padding: 10px;
             flex: 1;
-            background: white;
+            background: transparent;
             overflow-y: auto;
         }
 
@@ -212,23 +215,24 @@
             font-size: 1rem;
         }
 
+        /* Error — Red toned */
         .error {
-            background: #eef2ff; 
-            color: #4f46e5; 
+            background: #fef2f2;
+            color: #DC2626;
             padding: 15px;
             border-radius: 8px;
-            border-left: 4px solid #4f46e5; 
+            border-left: 4px solid #DC2626;
             margin: 10px 0;
             font-size: 0.9rem;
         }
 
         .result-card {
             background: white;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #fca5a5;
             border-radius: 6px;
             padding: 12px;
             margin-bottom: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(220,38,38,0.07);
         }
 
         .result-header {
@@ -237,10 +241,10 @@
             align-items: center;
             margin-bottom: 8px;
             padding-bottom: 6px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 2px solid #fca5a5;
         }
 
-        .sr-ref { 
+        .sr-ref {
             font-size: 1.1rem;
             font-weight: 700;
             color: #1f2937;
@@ -249,11 +253,11 @@
         .total-amount {
             font-size: 1rem;
             font-weight: 700;
-            color: #059669; 
-            background: #ecfdf5;
+            color: #DC2626;
+            background: #fef2f2;
             padding: 3px 6px;
             border-radius: 3px;
-            border: 1px solid #a7f3d0;
+            border: 1px solid #fca5a5;
         }
 
         .document-sections {
@@ -263,10 +267,23 @@
         }
 
         .section {
-            background: #f9fafb;
+            background: #fafafa;
             border: 1px solid #e5e7eb;
             border-radius: 4px;
             overflow: hidden;
+        }
+
+        /* Section 1 header — Red */
+        .section:nth-child(1) .section-header {
+            background: linear-gradient(90deg, #DC2626, #b91c1c);
+        }
+        /* Section 2 header — Purple */
+        .section:nth-child(2) .section-header {
+            background: linear-gradient(90deg, #7C3AED, #5b21b6);
+        }
+        /* Section 3 header — Orange */
+        .section:nth-child(3) .section-header {
+            background: linear-gradient(90deg, #EA580C, #c2410c);
         }
 
         .section-header {
@@ -285,7 +302,7 @@
 
         .section-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 6px;
         }
 
@@ -312,12 +329,11 @@
             color: #1f2937;
             font-weight: 500;
             word-break: break-word;
-            min-height: 18px; 
+            min-height: 18px;
         }
-        
-        /* Style for editable fields within the card */
+
         .field-value input, .field-value textarea {
-            border: 1px solid #ccc;
+            border: 1px solid #fca5a5;
             padding: 4px;
             border-radius: 4px;
             font-size: 0.85rem;
@@ -325,11 +341,17 @@
             box-sizing: border-box;
             background: white;
         }
-        
-        .field-value input[type="text"]:read-only, 
+
+        .field-value input:focus, .field-value textarea:focus {
+            outline: none;
+            border-color: #DC2626;
+            box-shadow: 0 0 0 2px rgba(220,38,38,0.15);
+        }
+
+        .field-value input[type="text"]:read-only,
         .field-value input[type="date"]:read-only,
         .field-value textarea:read-only {
-            background-color: #f3f4f6; /* Light gray for read-only fields */
+            background-color: #f3f4f6;
             color: #6b7280;
             font-weight: 500;
             border: 1px solid #e5e7eb;
@@ -341,12 +363,12 @@
             font-style: italic;
             padding: 20px 10px;
             font-size: 0.9rem;
-            background: #f9fafb;
+            background: #fef2f2;
             border-radius: 4px;
-            border: 1px dashed #d1d5db;
+            border: 1px dashed #fca5a5;
         }
 
-        /* --- Status indicator colors --- */
+        /* ── Status indicator colors ── */
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -354,11 +376,11 @@
             border-radius: 50%;
             margin-right: 6px;
         }
-        .status-deposited { background: #10b981; }
-        .status-pending { background: #f59e0b; }
-        .status-returned { background: #ef4444; }
+        .status-deposited   { background: #10b981; }
+        .status-pending     { background: #f59e0b; }
+        .status-returned    { background: #ef4444; }
         .status-represented { background: #eab308; }
-        .status-blank { background: #8b5cf6; }
+        .status-blank       { background: #8b5cf6; }
 
     </style>
 </head>
@@ -380,7 +402,7 @@
 
                 <div id="chqSearch" class="tab-content active" style="display: block;">
                     <form class="search-form" id="searchForm">
-                        <h3 style="font-size: 1rem; margin-bottom: 5px; color: #3730a3;"> Search Cheque To Modify</h3>
+                        <h3 style="font-size: 1rem; margin-bottom: 5px; color: #DC2626;"> Search Cheque To Modify</h3>
                         <div class="form-group" style="display: none;">
                             <label for="sheetId">Google Sheet ID:</label>
                             <input type="text" id="sheetId" placeholder="Enter Google Sheet ID" value="1iibqMhUKCdHU99zefkbkU1K4Pfqpg7eeq_Eu23hCSvY" required>
