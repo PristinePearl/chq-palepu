@@ -20,14 +20,14 @@
                     sans: ['Inter', 'sans-serif'],
                 },
                 colors: {
-                    // NEW INDIGO PALETTE
-                    'primary-indigo': '#4F46E5', // Modern Indigo (Primary)
-                    'dark-indigo': '#3730A3',  // Darker Indigo for text
-                    'secondary-green': '#059669', // Emerald Green for Add/Success
-                    'upload-red': '#DC2626', // Bright Red for Upload/Warning
-                    'app-bg': '#F4F7F9', // Base light background (will be overwritten by gradient)
+                    // RED + MULTICOLOR PALETTE
+                    'primary-indigo': '#DC2626', // Bright Red (Primary)
+                    'dark-indigo': '#7C3AED',    // Vivid Purple for headings/titles
+                    'secondary-green': '#059669', // Emerald Green for Add Row button
+                    'upload-red': '#EA580C',      // Orange for Upload button
+                    'app-bg': '#FFF5F5',
                     'card-bg': '#ffffff',
-                    'input-bg': '#F9FAFB', // Subtle input background
+                    'input-bg': '#FEF2F2',
                 },
                 boxShadow: {
                     // Modern, softer shadow
@@ -52,74 +52,100 @@
     input#otherBankName {
       text-transform: uppercase;
     }
-    /* Style for the select arrow - Updated SVG fill to new primary color */
+    /* Multicolor select arrow */
     select {
-        /* Remove default arrow */
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        /* Add custom arrow using background image (fill updated to primary-indigo hex) */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%234F46E5" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.86 0 1.32 1.013.754 1.658L8.753 11.14a.92.92 0 0 1-1.506 0z"/></svg>');
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="%23DC2626" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.86 0 1.32 1.013.754 1.658L8.753 11.14a.92.92 0 0 1-1.506 0z"/></svg>');
         background-repeat: no-repeat;
         background-position: right 0.75rem center;
         padding-right: 2rem;
     }
 
-    /* Table Specific Styles for better sticky header */
+    /* Gradient title bar */
+    .page-title {
+        background: linear-gradient(135deg, #DC2626 0%, #7C3AED 50%, #EA580C 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Colorful section card borders */
+    .section-deposit {
+        border-left: 4px solid #DC2626;
+        background: linear-gradient(to right, #FEF2F2, #ffffff);
+    }
+
+    /* Table Specific Styles */
     .table-container {
         max-height: 400px; 
         overflow-y: auto;
         border-radius: 0.75rem; 
-        border: 1px solid #E5E7EB; 
+        border: 2px solid #DC2626; 
     }
-    /* Increased TH padding for better spacing */
     th {
       position: sticky;
       top: 0;
       z-index: 10;
-      box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.1); 
-      padding-top: 1rem; /* p-4 */
-      padding-bottom: 1rem; /* p-4 */
+      box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.2); 
+      padding-top: 1rem;
+      padding-bottom: 1rem;
     }
-    /* Align value input to the right and highlight - Updated colors */
+    /* Colorful table header gradient */
+    thead tr {
+        background: linear-gradient(90deg, #DC2626 0%, #7C3AED 50%, #EA580C 100%) !important;
+    }
+    thead {
+        background: transparent !important;
+    }
+
     .item-row input[name*="chqValue"] {
       text-align: right;
       font-weight: 600; 
-      color: #DC2626; /* upload-red */
-      background: #FEF2F2; /* Light red background */
+      color: #DC2626;
+      background: #FEF2F2;
     }
-    /* Updated input padding in table for less congestion */
     .item-row input, .item-row select {
         padding-top: 0.5rem; 
         padding-bottom: 0.5rem;
         border-radius: 0.5rem; 
         transition: border-color 0.2s, box-shadow 0.2s;
-        /* Add a subtle focus ring to table inputs as well */
-        --tw-ring-color: #4F46E5;
+        --tw-ring-color: #DC2626;
         --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
         --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
     }
-    /* Decongested table cell padding */
     .item-row td {
-        padding: 0.5rem; /* p-2 for all table data cells */
+        padding: 0.5rem;
     }
+
+    /* Colorful total bar */
+    .total-value-container {
+        background: linear-gradient(to right, #FEF2F2, #F5F3FF, #FFF7ED) !important;
+        border-top: 3px solid transparent !important;
+        border-image: linear-gradient(90deg, #DC2626, #7C3AED, #EA580C) 1 !important;
+    }
+
+    /* Multicolor label accents */
+    .deposit-label { color: #DC2626; }
+    .party-label   { color: #7C3AED; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-8 min-h-screen font-sans antialiased">
+<body class="bg-gradient-to-br from-red-100 via-purple-50 to-orange-50 p-4 sm:p-8 min-h-screen font-sans antialiased">
   
   <div class="container mx-auto">
     <div class="bg-card-bg shadow-xl rounded-2xl p-6 sm:p-10 max-w-6xl mx-auto"> 
       
-      <h1 class="text-3xl font-extrabold text-dark-indigo border-b-2 border-primary-indigo/30 pb-4 mb-8 flex items-center justify-center tracking-wider">
+      <h1 class="text-3xl font-extrabold page-title border-b-2 border-red-200 pb-4 mb-8 flex items-center justify-center tracking-wider">
           <img src="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" 
                alt="Pristine Pearl Pharma Logo" 
                class="h-10 w-auto mr-4 rounded-full p-0.5 bg-gray-50 transition duration-300 hover:scale-105">
           PALEPU PHARMA DISTRIBUTORS (SS)
       </h1>
 
-      <div class="p-5 border border-gray-100 rounded-xl bg-gray-50/50 mb-8 space-y-6">
+      <div class="section-deposit p-5 border border-red-100 rounded-xl mb-8 space-y-6">
           
-          <h2 class="text-md font-semibold text-primary-indigo border-b border-primary-indigo/30 pb-2 uppercase tracking-wider">Deposit Details</h2>
+          <h2 class="text-md font-semibold text-red-600 border-b border-red-300 pb-2 uppercase tracking-wider">Deposit Details</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"> 
             
             <div class="input-group">
@@ -150,7 +176,7 @@
             </div>
           </div>
 
-          <h2 class="text-md font-semibold text-primary-indigo border-b border-primary-indigo/30 pb-2 pt-4 uppercase tracking-wider">Party & Bank Details</h2>
+          <h2 class="text-md font-semibold text-purple-600 border-b border-purple-300 pb-2 pt-4 uppercase tracking-wider">Party & Bank Details</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
             
             <div class="input-group">
@@ -166,7 +192,7 @@
                       class="w-full py-2 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
                 </select>
               <input id="otherBankName" type="text" placeholder="ENTER BANK NAME" style="display: none;"
-                     class="w-full mt-2 py-2 px-3 border border-gray-500 rounded-lg bg-white focus:ring-2 focus:ring-secondary-green focus:border-secondary-green transition duration-200 text-sm">
+                     class="w-full mt-2 py-2 px-3 border border-gray-500 rounded-lg bg-white focus:ring-2 focus:ring-primary-indigo focus:border-primary-indigo transition duration-200 text-sm">
             </div>
             
             <div class="input-group">
@@ -184,7 +210,7 @@
 
       </div>
 
-      <h2 class="text-lg font-bold text-dark-indigo border-b border-gray-200 pb-2 mb-4 mt-6 uppercase tracking-wider">Cheque Details</h2>
+      <h2 class="text-lg font-bold text-orange-600 border-b-2 border-orange-200 pb-2 mb-4 mt-6 uppercase tracking-wider">Cheque Details</h2>
 
       <div class="table-container shadow-lg">
           <table class="min-w-full">
@@ -215,24 +241,24 @@
         
         <div class="left-actions flex gap-4">
           <button id="addRowBtn" type="button" 
-                  class="px-6 py-3 rounded-xl font-semibold text-white bg-secondary-green hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-secondary-green/50">
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition duration-300 shadow-lg hover:shadow-emerald-500/50">
             <i class="fa-solid fa-plus"></i> Add Cheque Row
           </button>
         </div>
         
         <div class="right-actions flex items-center gap-4">
           <button id="reportBtn" type="button" 
-                  class="px-6 py-3 rounded-xl font-semibold text-white bg-primary-indigo hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-primary-indigo/50">
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition duration-300 shadow-lg hover:shadow-red-500/50">
             <i class="fa-solid fa-file-lines"></i> View Report
           </button>
           
           <button id="modifyBtn" type="button" 
-                  class="px-6 py-3 rounded-xl font-semibold text-white bg-dark-indigo hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-dark-indigo/50">
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-purple-600 hover:bg-purple-700 transition duration-300 shadow-lg hover:shadow-purple-500/50">
             <i class="fa-solid fa-pen-to-square"></i> Modify
           </button>
           <span id="statusMessage" class="status-message text-sm font-medium text-secondary-green"></span>
           <button id="submitToSheet" type="button" 
-                  class="px-6 py-3 rounded-xl font-semibold text-white bg-upload-red hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-upload-red/50">
+                  class="px-6 py-3 rounded-xl font-semibold text-white bg-orange-600 hover:bg-orange-700 transition duration-300 shadow-lg hover:shadow-orange-500/50">
             <i class="fa-solid fa-cloud-arrow-up"></i> Upload
           </button>
         </div>
@@ -253,7 +279,7 @@
       
       <div class="flex justify-end space-x-3">
           <button id="modalCloseBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150 font-medium">Close</button>
-          <button id="modalConfirmBtn" class="px-4 py-2 bg-primary-indigo text-white rounded-lg hover:bg-primary-indigo/90 transition duration-150 hidden font-medium">Confirm</button>
+          <button id="modalConfirmBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-150 hidden font-medium">Confirm</button>
       </div>
     </div>
   </div>
