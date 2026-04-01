@@ -7,6 +7,7 @@
     <link rel="icon" href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -246,314 +247,51 @@
     // Generates a styled .xlsx file using Office Open XML + JSZip-free approach
     // Uses the Blob + base64 technique with a pre-built template structure
     // ============================================================
-    const XLSXWriter = (function() {
+    function exportDepositSlipToExcel(dataRows, fileName = "Deposit_Slip.xlsx") {
 
-        function escXml(v) {
-            return String(v === null || v === undefined ? '' : v)
-                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-                .replace(/"/g,'&quot;').replace(/'/g,'&apos;');
-        }
+    const wb = XLSX.utils.book_new();
 
-        // Convert column index (0-based) to Excel letter (A, B, ... Z, AA ...)
-        function colLetter(n) {
-            let s = '';
-            n++;
-            while (n > 0) { n--; s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n / 26); }
-            return s;
-        }
+    // Build data exactly like print layout
+    const wsData = [
+        ["DEPOSIT SLIP"],
+        [],
+        ["Date:", new Date().toLocaleDateString()],
+        [],
+        ["Cheque No", "Party Name", "Bank", "Amount"]
+    ];
 
-        function cellAddr(r, c) { return colLetter(c) + (r + 1); }
+    dataRows.forEach(row => {
+        wsData.push([
+            row.chequeNo || "",
+            row.partyName || "",
+            row.bank || "",
+            row.amount || ""
+        ]);
+    });
 
-        // Minimal OPC package builder using only Blob + ArrayBuffer (no JSZip)
-        // We build a valid xlsx (which is a zip) using a pure-JS zip builder
-        function u8(str) {
-            const arr = [];
-            for (let i = 0; i < str.length; i++) {
-                const code = str.charCodeAt(i);
-                if (code < 128) { arr.push(code); }
-                else if (code < 2048) { arr.push(0xC0 | (code >> 6), 0x80 | (code & 63)); }
-                else { arr.push(0xE0 | (code >> 12), 0x80 | ((code >> 6) & 63), 0x80 | (code & 63)); }
-            }
-            return new Uint8Array(arr);
-        }
+    // Total row
+    const total = dataRows.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+    wsData.push([]);
+    wsData.push(["", "", "TOTAL", total]);
 
-        // CRC32 table
-        const crcTable = new Uint32Array(256);
-        for (let i = 0; i < 256; i++) {
-            let c = i;
-            for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-            crcTable[i] = c;
-        }
-        function crc32(data) {
-            let crc = 0xFFFFFFFF;
-            for (let i = 0; i < data.length; i++) crc = crcTable[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
-            return (crc ^ 0xFFFFFFFF) >>> 0;
-        }
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-        function pack32LE(n) { return [n & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF]; }
-        function pack16LE(n) { return [n & 0xFF, (n >> 8) & 0xFF]; }
+    // 🔥 IMPORTANT: Merges for proper layout
+    ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Title merge
+    ];
 
-        function zipEntry(name, data) {
-            const nameBytes = u8(name);
-            const crc = crc32(data);
-            const size = data.length;
-            // Local file header
-            const lfh = [
-                0x50,0x4B,0x03,0x04, // signature
-                ...pack16LE(20),      // version needed
-                ...pack16LE(0),       // flags
-                ...pack16LE(0),       // compression (stored)
-                ...pack16LE(0),       // mod time
-                ...pack16LE(0),       // mod date
-                ...pack32LE(crc),
-                ...pack32LE(size),    // compressed size
-                ...pack32LE(size),    // uncompressed size
-                ...pack16LE(nameBytes.length),
-                ...pack16LE(0),       // extra field length
-                ...nameBytes
-            ];
-            return { lfh: new Uint8Array(lfh), data };
-        }
+    // Column width (important for layout)
+    ws['!cols'] = [
+        { wch: 15 },
+        { wch: 30 },
+        { wch: 20 },
+        { wch: 15 }
+    ];
 
-        function buildZip(files) {
-            const parts = [];
-            const centralDir = [];
-            let offset = 0;
-
-            files.forEach(({ name, data }) => {
-                const nameBytes = u8(name);
-                const crc = crc32(data);
-                const size = data.length;
-                const lfh = new Uint8Array([
-                    0x50,0x4B,0x03,0x04,
-                    ...pack16LE(20), ...pack16LE(0), ...pack16LE(0),
-                    ...pack16LE(0), ...pack16LE(0),
-                    ...pack32LE(crc), ...pack32LE(size), ...pack32LE(size),
-                    ...pack16LE(nameBytes.length), ...pack16LE(0),
-                    ...nameBytes
-                ]);
-                parts.push(lfh, data);
-
-                centralDir.push(new Uint8Array([
-                    0x50,0x4B,0x01,0x02,
-                    ...pack16LE(20), ...pack16LE(20),
-                    ...pack16LE(0), ...pack16LE(0), ...pack16LE(0),
-                    ...pack16LE(0), ...pack16LE(0),
-                    ...pack32LE(crc), ...pack32LE(size), ...pack32LE(size),
-                    ...pack16LE(nameBytes.length), ...pack16LE(0), ...pack16LE(0),
-                    ...pack16LE(0), ...pack16LE(0),
-                    ...pack32LE(0),  // external attributes
-                    ...pack32LE(offset),
-                    ...nameBytes
-                ]));
-
-                offset += lfh.length + data.length;
-            });
-
-            const cdSize = centralDir.reduce((s, d) => s + d.length, 0);
-            const eocd = new Uint8Array([
-                0x50,0x4B,0x05,0x06,
-                ...pack16LE(0), ...pack16LE(0),
-                ...pack16LE(files.length), ...pack16LE(files.length),
-                ...pack32LE(cdSize),
-                ...pack32LE(offset),
-                ...pack16LE(0)
-            ]);
-
-            const allParts = [...parts, ...centralDir, eocd];
-            const total = allParts.reduce((s, p) => s + p.length, 0);
-            const buf = new Uint8Array(total);
-            let pos = 0;
-            allParts.forEach(p => { buf.set(p, pos); pos += p.length; });
-            return buf;
-        }
-
-        // Build the xlsx files
-        function buildXlsx(rows, styles, merges, colWidths, rowHeights) {
-            // Shared strings
-            const strings = [];
-            const strMap = {};
-            function ssi(s) {
-                const k = String(s);
-                if (strMap[k] === undefined) { strMap[k] = strings.length; strings.push(k); }
-                return strMap[k];
-            }
-
-            // Build cell XML
-            let sheetRows = '';
-            rows.forEach((row, ri) => {
-                const ht = rowHeights && rowHeights[ri] ? ` ht="${rowHeights[ri]}" customHeight="1"` : '';
-                sheetRows += `<row r="${ri+1}"${ht}>`;
-                row.forEach((val, ci) => {
-                    const addr = cellAddr(ri, ci);
-                    const styleIdx = (styles[ri] && styles[ri][ci] !== undefined) ? styles[ri][ci] : 0;
-                    if (val === '' || val === null || val === undefined) {
-                        sheetRows += `<c r="${addr}" s="${styleIdx}"/>`;
-                    } else if (typeof val === 'number') {
-                        sheetRows += `<c r="${addr}" s="${styleIdx}"><v>${val}</v></c>`;
-                    } else {
-                        const si = ssi(val);
-                        sheetRows += `<c r="${addr}" t="s" s="${styleIdx}"><v>${si}</v></c>`;
-                    }
-                });
-                sheetRows += '</row>';
-            });
-
-            // Merges
-            let mergeCells = '';
-            if (merges && merges.length) {
-                mergeCells = '<mergeCells count="' + merges.length + '">' +
-                    merges.map(m => `<mergeCell ref="${cellAddr(m.s.r,m.s.c)}:${cellAddr(m.e.r,m.e.c)}"/>`).join('') +
-                    '</mergeCells>';
-            }
-
-            // Col widths
-            let colsXml = '';
-            if (colWidths && colWidths.length) {
-                colsXml = '<cols>' + colWidths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('') + '</cols>';
-            }
-
-            const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-${colsXml}
-<sheetData>${sheetRows}</sheetData>
-${mergeCells}
-</worksheet>`;
-
-            const sst = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${strings.length}" uniqueCount="${strings.length}">
-${strings.map(s=>`<si><t xml:space="preserve">${escXml(s)}</t></si>`).join('')}
-</sst>`;
-
-            return { sheetXml, sst };
-        }
-
-        // Build styles.xml with all needed formats
-        function buildStyles(styleList) {
-            // styleList: array of {bold, sz, color, bg, halign, valign, underline, numFmt, borderBottom, borderTop}
-            // We'll enumerate unique fonts, fills, borders, numFmts
-
-            const fonts = [];
-            const fills = [
-                '<fill><patternFill patternType="none"/></fill>',
-                '<fill><patternFill patternType="gray125"/></fill>'
-            ];
-            const borders = ['<border><left/><right/><top/><bottom/><diagonal/></border>'];
-            const numFmts = [];
-            const xfs = [];
-
-            const fontMap = {}, fillMap = {}, borderMap = {}, numFmtMap = {};
-            let numFmtId = 164;
-
-            function getFont(s) {
-                const bold = s.bold ? '<b/>' : '';
-                const underline = s.underline ? '<u/>' : '';
-                const sz = s.sz || 10;
-                const color = s.color ? `<color rgb="${s.color}"/>` : '<color theme="1"/>';
-                const key = bold+'|'+underline+'|'+sz+'|'+s.color;
-                if (fontMap[key] === undefined) {
-                    fontMap[key] = fonts.length;
-                    fonts.push(`<font>${bold}${underline}<sz val="${sz}"/>${color}<name val="Calibri"/></font>`);
-                }
-                return fontMap[key];
-            }
-
-            function getFill(bg) {
-                if (!bg) return 0;
-                const key = bg;
-                if (fillMap[key] === undefined) {
-                    fillMap[key] = fills.length;
-                    fills.push(`<fill><patternFill patternType="solid"><fgColor rgb="${bg}"/></patternFill></fill>`);
-                }
-                return fillMap[key];
-            }
-
-            function getBorder(s) {
-                const bt = s.borderTop ? `<top style="medium"><color rgb="999999"/></top>` : '<top/>';
-                const bb = s.borderBottom ? `<bottom style="${s.borderBottom}"><color rgb="${s.borderBottomColor||'000000'}"/></bottom>` : '<bottom/>';
-                const key = bt+'|'+bb;
-                if (borderMap[key] === undefined) {
-                    borderMap[key] = borders.length;
-                    borders.push(`<border><left/><right/>${bt}${bb}<diagonal/></border>`);
-                }
-                return borderMap[key];
-            }
-
-            function getNumFmt(fmt) {
-                if (!fmt) return 0;
-                if (fmt === '#,##0.00') {
-                    // Use built-in id 4
-                    return 4;
-                }
-                const key = fmt;
-                if (numFmtMap[key] === undefined) {
-                    numFmtMap[key] = numFmtId;
-                    numFmts.push(`<numFmt numFmtId="${numFmtId}" formatCode="${escXml(fmt)}"/>`);
-                    numFmtId++;
-                }
-                return numFmtMap[key];
-            }
-
-            styleList.forEach(s => {
-                const fontId = getFont(s);
-                const fillId = getFill(s.bg);
-                const borderId = getBorder(s);
-                const numFmtId2 = getNumFmt(s.numFmt);
-                const ha = s.halign || 'general';
-                const va = s.valign || 'bottom';
-                const wrapText = s.wrapText ? '<wrapText/>' : '';
-                xfs.push(
-                    `<xf numFmtId="${numFmtId2}" fontId="${fontId}" fillId="${fillId}" borderId="${borderId}" xfId="0"` +
-                    ` applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1" applyNumberFormat="1">` +
-                    `<alignment horizontal="${ha}" vertical="${va}"${s.wrapText?' wrapText="1"':''}/>` +
-                    `</xf>`
-                );
-            });
-
-            const numFmtsXml = numFmts.length
-                ? `<numFmts count="${numFmts.length}">${numFmts.join('')}</numFmts>`
-                : '<numFmts count="0"/>';
-
-            return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-${numFmtsXml}
-<fonts count="${fonts.length}">${fonts.join('')}</fonts>
-<fills count="${fills.length}">${fills.join('')}</fills>
-<borders count="${borders.length}">${borders.join('')}</borders>
-<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-<cellXfs count="${xfs.length}">${xfs.join('')}</cellXfs>
-</styleSheet>`;
-        }
-
-        function download(filename, data) {
-            const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = filename; a.style.display = 'none';
-            document.body.appendChild(a); a.click();
-            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
-        }
-
-        return {
-            export: function(filename, rows, styleMatrix, merges, colWidths, rowHeights, styleList) {
-                const { sheetXml, sst } = buildXlsx(rows, styleMatrix, merges, colWidths, rowHeights);
-                const stylesXml = buildStyles(styleList);
-
-                const files = [
-                    { name: '_rels/.rels',                      data: u8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>') },
-                    { name: 'xl/_rels/workbook.xml.rels',       data: u8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>') },
-                    { name: 'xl/workbook.xml',                  data: u8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Deposit Slip" sheetId="1" r:id="rId1"/></sheets></workbook>') },
-                    { name: 'xl/worksheets/sheet1.xml',         data: u8(sheetXml) },
-                    { name: 'xl/sharedStrings.xml',             data: u8(sst) },
-                    { name: 'xl/styles.xml',                    data: u8(stylesXml) },
-                    { name: '[Content_Types].xml',              data: u8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>') }
-                ];
-
-                const zipData = buildZip(files);
-                download(filename, zipData);
-            }
-        };
-    })();
+    XLSX.utils.book_append_sheet(wb, ws, "Deposit Slip");
+    XLSX.writeFile(wb, fileName);
+}
     </script>
 </head>
 <body>
@@ -1300,10 +1038,20 @@ function doExportExcel() {
         const rowHeights = { 0: 36, 1: 28, 2: 20, 3: 20 };
 
         const safeDate = dateLabel.replace(/\//g, '-');
-        XLSXWriter.export(
-            'Deposit_Slip_' + selectedPrintBank + '_' + safeDate + '.xlsx',
-            rows, styleMatrix, merges, colWidths, rowHeights, styleList
-        );
+        const wb = XLSX.utils.book_new();
+const ws = XLSX.utils.aoa_to_sheet(rows);
+
+// merges
+ws['!merges'] = merges;
+
+// column width
+ws['!cols'] = colWidths.map(w => ({ wch: w }));
+
+XLSX.utils.book_append_sheet(wb, ws, "Deposit Slip");
+
+const safeFileName = 'Deposit_Slip_' + selectedPrintBank + '_' + safeDate + '.xlsx';
+
+XLSX.writeFile(wb, safeFileName);
 
     } catch (err) {
         console.error('Excel export error:', err);
