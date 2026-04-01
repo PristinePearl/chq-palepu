@@ -7,7 +7,7 @@
     <link rel="icon" href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-js-style/1.2.0/xlsx.bundle.js"></script>
+<script src="https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -369,7 +369,7 @@
         </div>
         <div class="modal-actions">
             <button class="btn" onclick="doPrint()" style="background:linear-gradient(135deg,#003087,#0050c8);">🖨️ Print</button>
-            <button class="btn btn-secondary" onclick="doExportExcel()">📊 Export Excel</button>
+            <button class="btn btn-secondary" onclick="exportDepositSlipHTML()">📊 Export Excel</button>
             <button class="btn" onclick="closePrintModal()" style="background:linear-gradient(135deg,#64748b,#475569);">Cancel</button>
         </div>
     </div>
@@ -1426,6 +1426,65 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 // Close modal on overlay click
 document.getElementById('printModal').addEventListener('click', function(e){ if(e.target===this)closePrintModal(); });
+
+function exportDepositSlipHTML() {
+
+    const printContent = document.getElementById("printArea").innerHTML;
+
+    if (!printContent) {
+        alert("No data to export");
+        return;
+    }
+
+    const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                table { border-collapse: collapse; width: 100%; }
+                th {
+                    background: yellow;
+                    border: 1px solid #000;
+                    font-weight: bold;
+                    padding: 6px;
+                }
+                td {
+                    border: 1px solid #000;
+                    padding: 6px;
+                }
+                .total-row td {
+                    font-weight: bold;
+                    border-top: 2px solid #000;
+                }
+                .title {
+                    font-size: 18px;
+                    font-weight: bold;
+                    text-align: center;
+                    color: red;
+                }
+                .subtitle {
+                    text-align: center;
+                    font-weight: bold;
+                    text-decoration: underline;
+                }
+            </style>
+        </head>
+        <body>
+            ${printContent}
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Deposit_Slip.xls";
+    a.click();
+}
+
 </script>
 </body>
 </html>
