@@ -1054,7 +1054,7 @@ function doExportExcel() {
         XLSX.utils.book_append_sheet(wb, ws, 'Deposit Slip');
 
         const safeDate = dateLabel.replace(/\//g, '-');
-        XLSX.writeFile(wb, `Deposit_Slip_${selectedPrintBank}_${safeDate}.xlsx`);
+        XLSX.writeFile(wb, `PALEPU CHQ-DEPOSIT DETAILS-${safeDate}.xlsx`);
 
     } catch (err) {
         console.error('Excel export error:', err);
