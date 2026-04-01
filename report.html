@@ -7,7 +7,7 @@
     <link rel="icon" href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -240,59 +240,6 @@
             .banker-cards-grid { grid-template-columns:1fr; }
         }
     </style>
-
-    <script>
-    // ============================================================
-    // Minimal self-contained XLSX writer (no CDN needed)
-    // Generates a styled .xlsx file using Office Open XML + JSZip-free approach
-    // Uses the Blob + base64 technique with a pre-built template structure
-    // ============================================================
-    function exportDepositSlipToExcel(dataRows, fileName = "Deposit_Slip.xlsx") {
-
-    const wb = XLSX.utils.book_new();
-
-    // Build data exactly like print layout
-    const wsData = [
-        ["DEPOSIT SLIP"],
-        [],
-        ["Date:", new Date().toLocaleDateString()],
-        [],
-        ["Cheque No", "Party Name", "Bank", "Amount"]
-    ];
-
-    dataRows.forEach(row => {
-        wsData.push([
-            row.chequeNo || "",
-            row.partyName || "",
-            row.bank || "",
-            row.amount || ""
-        ]);
-    });
-
-    // Total row
-    const total = dataRows.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-    wsData.push([]);
-    wsData.push(["", "", "TOTAL", total]);
-
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-    // 🔥 IMPORTANT: Merges for proper layout
-    ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Title merge
-    ];
-
-    // Column width (important for layout)
-    ws['!cols'] = [
-        { wch: 15 },
-        { wch: 30 },
-        { wch: 20 },
-        { wch: 15 }
-    ];
-
-    XLSX.utils.book_append_sheet(wb, ws, "Deposit Slip");
-    XLSX.writeFile(wb, fileName);
-}
-    </script>
 </head>
 <body>
 
@@ -514,7 +461,7 @@ const BANKS = {
 let lastSearchResults = [];
 let lastFilterResults = [];
 let chartInstances = [];
-let currentPrintData = null; // { date, cheques[] }
+let currentPrintData = null;
 let selectedPrintBank = 'HDFC';
 
 // ==========================================
@@ -651,7 +598,6 @@ function calculateAIKpis(data) {
 function showLoading() { document.getElementById('resultsSection').innerHTML='<div class="loading">Loading data, please wait...</div>'; hideAllExportButtons(); destroyCharts(); }
 function showError(msg) { document.getElementById('resultsSection').innerHTML=`<div class="error"><strong>Error:</strong> ${msg}</div>`; hideAllExportButtons(); destroyCharts(); }
 function hideAllExportButtons() { ['exportBtn','exportAllBtn','exportTodayBtn','exportBankBtn','exportDepositBtn','exportChartBtn','exportAIReportBtn'].forEach(id=>{ document.getElementById(id).style.display='none'; }); }
-
 function destroyCharts() { chartInstances.forEach(c=>c.destroy()); chartInstances=[]; }
 
 function createChart(id, type, labels, data, title) {
@@ -751,16 +697,13 @@ function exportToCSV(data, filename) {
 // ==========================================
 function renderBankerCards() {
     const container = document.getElementById('resultsSection');
-
     container.innerHTML = Object.values(BANKS).map(bank => `
         <div class="banker-card">
             <div class="banker-card-header" style="background:${bank.headerGradient};">
                 <div class="bank-name-big">${bank.name}</div>
                 <div class="bank-tagline">Company Bank Account</div>
             </div>
-
             <div class="banker-card-body">
-
                 <div class="banker-detail-row">
                     <div class="banker-detail-icon" style="background:#f0f9ff;">🏢</div>
                     <div class="banker-detail-info">
@@ -769,7 +712,6 @@ function renderBankerCards() {
                     </div>
                     <button class="copy-btn" onclick="copyField('${bank.acName}',this)">Copy</button>
                 </div>
-
                 <div class="banker-detail-row">
                     <div class="banker-detail-icon" style="background:#ecfdf5;">🔢</div>
                     <div class="banker-detail-info">
@@ -778,7 +720,6 @@ function renderBankerCards() {
                     </div>
                     <button class="copy-btn" onclick="copyField('${bank.acNo}',this)">Copy</button>
                 </div>
-
                 <div class="banker-detail-row">
                     <div class="banker-detail-icon" style="background:#fef2f2;">🏷️</div>
                     <div class="banker-detail-info">
@@ -787,7 +728,6 @@ function renderBankerCards() {
                     </div>
                     <button class="copy-btn" onclick="copyField('${bank.ifsc}',this)">Copy</button>
                 </div>
-
                 <div class="banker-detail-row">
                     <div class="banker-detail-icon" style="background:#fff7ed;">📍</div>
                     <div class="banker-detail-info">
@@ -796,7 +736,6 @@ function renderBankerCards() {
                     </div>
                     <button class="copy-btn" onclick="copyField('${bank.branch}',this)">Copy</button>
                 </div>
-
             </div>
         </div>
     `).join('');
@@ -894,164 +833,219 @@ function doPrint() {
     const printArea = document.getElementById('printArea');
     printArea.innerHTML = html;
     printArea.style.display = 'block';
-
-    // Hide main UI temporarily
     document.querySelector('.main-container').style.display = 'none';
     document.getElementById('printModal').classList.remove('active');
-
     window.print();
-
-    // Restore
     document.querySelector('.main-container').style.display = 'flex';
     printArea.style.display = 'none';
     printArea.innerHTML = '';
 }
 
+// ==========================================
+// EXCEL EXPORT — matches print slip format exactly
+// ==========================================
 function doExportExcel() {
-    if (!currentPrintData || !currentPrintData.cheques.length) {
-        alert('No data to export');
+    if (!currentPrintData || !currentPrintData.cheques || !currentPrintData.cheques.length) {
+        alert('No data to export.');
         return;
     }
+
     try {
-        const data = currentPrintData.cheques;
-        const bank = BANKS[selectedPrintBank];
-        const bankColorRgb = 'FF003087'; // HDFC Bank blue
-
-        let total = 0;
-        data.forEach(row => {
-            total += parseFloat((row['Chq Value (₹)'] || '0').replace(/[^0-9.-]+/g, '')) || 0;
-        });
-
+        const bank    = BANKS[selectedPrintBank];
+        const cheques = currentPrintData.cheques;
         const dateLabel = (currentPrintData.date && currentPrintData.date !== 'No Date')
             ? currentPrintData.date
             : new Date().toLocaleDateString('en-IN');
 
-        // ---- Style definitions (indexed) ----
-        // 0 = default
-        // 1 = bank name (large, coloured, center)
-        // 2 = subtitle (bold, underline, center)
-        // 3 = meta bold left
-        // 4 = meta bold center
-        // 5 = meta bold right
-        // 6 = paid-into (bold left, bottom border)
-        // 7 = paid-into blank cells (bottom border only)
-        // 8 = paid-into right cell
-        // 9 = header cell (yellow bg, bold, center)
-        // 10 = data cell left
-        // 11 = data cell center (S.No)
-        // 12 = data cell right + number format (Amount)
-        // 13 = data cell left alt row
-        // 14 = data cell center alt row
-        // 15 = data cell right alt row + number
-        // 16 = total label (bold right)
-        // 17 = total amount (bold right, number, top border medium)
+        // ── helpers ──────────────────────────────────────────────
+        // border object factory
+        const bdr = (style) => ({
+            top:    { style },
+            bottom: { style },
+            left:   { style },
+            right:  { style }
+        });
+        const bdrOnly = (sides, style) => {
+            const o = {};
+            sides.forEach(s => { o[s] = { style }; });
+            return o;
+        };
 
-        const styleList = [
-            // 0 default
-            { sz: 10 },
-            // 1 bank name
-            { bold: true, sz: 18, color: bankColorRgb, halign: 'center', valign: 'center' },
-            // 2 subtitle
-            { bold: true, sz: 12, underline: true, halign: 'center', valign: 'center' },
-            // 3 meta left
-            { bold: true, sz: 10, halign: 'left', valign: 'center' },
-            // 4 meta center
-            { bold: true, sz: 10, halign: 'center', valign: 'center' },
-            // 5 meta right
-            { bold: true, sz: 10, halign: 'right', valign: 'center' },
-            // 6 paid-into left (bottom border)
-            { bold: true, sz: 10, halign: 'left', valign: 'center', borderBottom: 'thin', borderBottomColor: '000000' },
-            // 7 paid-into blank (bottom border)
-            { borderBottom: 'thin', borderBottomColor: '000000' },
-            // 8 paid-into right
-            { bold: true, sz: 10, halign: 'right', valign: 'center', borderBottom: 'thin', borderBottomColor: '000000' },
-            // 9 header yellow
-            { bold: true, sz: 10, bg: 'FFFFFF00', halign: 'center', valign: 'center' },
-            // 10 data left white
-            { sz: 10, halign: 'left', valign: 'center' },
-            // 11 data center white (S.No)
-            { sz: 10, halign: 'center', valign: 'center' },
-            // 12 data right white (Amount)
-            { sz: 10, halign: 'right', valign: 'center', numFmt: '#,##0.00' },
-            // 13 data left alt (light grey)
-            { sz: 10, halign: 'left', valign: 'center', bg: 'FFF9FAFB' },
-            // 14 data center alt
-            { sz: 10, halign: 'center', valign: 'center', bg: 'FFF9FAFB' },
-            // 15 data right alt (Amount)
-            { sz: 10, halign: 'right', valign: 'center', numFmt: '#,##0.00', bg: 'FFF9FAFB' },
-            // 16 total label (bold, right, top border medium)
-            { bold: true, sz: 11, halign: 'right', valign: 'center', borderTop: true },
-            // 17 total amount
-            { bold: true, sz: 11, halign: 'right', valign: 'center', numFmt: '#,##0.00', borderTop: true },
-        ];
+        // cell factory:  makeCell(value, fontOpts, fillRgb, borderObj, alignH, numFmt)
+        function makeCell(v, font = {}, fillRgb = null, border = null, alignH = 'left', numFmt = null) {
+            const cell = { v, t: typeof v === 'number' ? 'n' : 's' };
+            const s = {};
 
-        // ---- Build rows ----
-        const rows = [];
-        const styleMatrix = [];  // [row][col] = style index
+            // font
+            s.font = Object.assign({ name: 'Calibri', sz: 11 }, font);
 
-        function addRow(cells, styleRow) {
-            rows.push(cells);
-            styleMatrix.push(styleRow);
+            // fill
+            if (fillRgb) {
+                s.fill = { patternType: 'solid', fgColor: { rgb: fillRgb } };
+            }
+
+            // border
+            if (border) s.border = border;
+
+            // alignment
+            s.alignment = { horizontal: alignH, vertical: 'center', wrapText: true };
+
+            // number format
+            if (numFmt) { s.numFmt = numFmt; cell.t = 'n'; }
+
+            cell.s = s;
+            return cell;
         }
 
-        // Row 0: bank name
-        addRow([bank.name,'','','','',''], [1,1,1,1,1,1]);
-        // Row 1: subtitle
-        addRow(['STATEMENT OF CHEQUES / DRAFTS','','','','',''], [2,2,2,2,2,2]);
-        // Row 2: meta
-        addRow(['Account No.: '+bank.acNo, '', 'Date: '+dateLabel, '', 'Bank Slip No: ___________', ''], [3,3,4,4,5,5]);
-        // Row 3: paid into
-        addRow(['Paid into the credit of '+bank.acName,'','','','','SlipNo: ___________'], [6,7,7,7,7,8]);
-        // Row 4: blank
-        addRow(['','','','','',''], [0,0,0,0,0,0]);
-        // Row 5: headers
-        addRow(['S.No.','Party Name','Chq.No','Chq.Date','Bank Name','Amount (₹)'], [9,9,9,9,9,9]);
+        // ── build worksheet rows ──────────────────────────────────
+        const ws = {};
+        const merges = [];
+        let r = 0;   // 0-based row index
 
-        const dataStartRow = 6;
-        data.forEach((row, i) => {
-            const amt = parseFloat((row['Chq Value (₹)'] || '0').replace(/[^0-9.-]+/g, '')) || 0;
-            const isAlt = i % 2 === 1;
-            const sL = isAlt ? 13 : 10;
-            const sC = isAlt ? 14 : 11;
-            const sR = isAlt ? 15 : 12;
-            addRow(
-                [i+1, row['Party Name']||'', row['Chq Number']||'', row['Chq Date']||'', row['Bank Name (Party)']||'', amt],
-                [sC, sL, sL, sL, sL, sR]
-            );
+        function setCell(row, col, cell) {
+            ws[XLSX.utils.encode_cell({ r: row, c: col })] = cell;
+        }
+        function addMerge(r1, c1, r2, c2) {
+            merges.push({ s: { r: r1, c: c1 }, e: { r: r2, c: c2 } });
+        }
+
+        // ── ROW 0 : Bank name ─────────────────────────────────────
+        // Big red bold title, merged A–F
+        setCell(r, 0, makeCell(bank.name,
+            { bold: true, sz: 20, color: { rgb: 'CC0000' } },
+            null, null, 'center'));
+        addMerge(r, 0, r, 5);
+        r++;
+
+        // ── ROW 1 : Subtitle ──────────────────────────────────────
+        setCell(r, 0, makeCell('STATEMENT OF CHEQUES / DRAFTS',
+            { bold: true, sz: 13, underline: true },
+            null, null, 'center'));
+        addMerge(r, 0, r, 5);
+        r++;
+
+        // ── ROW 2 : blank spacer ──────────────────────────────────
+        r++;
+
+        // ── ROW 3 : Account No | Date | Bank Slip No ─────────────
+        setCell(r, 0, makeCell('Account No.:  ' + bank.acNo, { bold: true, sz: 11 }, null, null, 'left'));
+        addMerge(r, 0, r, 1);
+        setCell(r, 2, makeCell('Date:  ' + dateLabel, { bold: true, sz: 11 }, null, null, 'center'));
+        addMerge(r, 2, r, 3);
+        setCell(r, 4, makeCell('Bank Slip No:  ___________', { bold: true, sz: 11 }, null, null, 'right'));
+        addMerge(r, 4, r, 5);
+        r++;
+
+        // ── ROW 4 : Paid-into line (bottom border) ─────────────────
+        const paidBdr = bdrOnly(['bottom'], 'medium');
+        const paidCell = makeCell(
+            'Paid into the credit of  ' + bank.acName,
+            { bold: true, sz: 11 }, null, paidBdr, 'left');
+        setCell(r, 0, paidCell);
+        addMerge(r, 0, r, 4);
+
+        const slipCell = makeCell('SlipNo:  ___________',
+            { bold: true, sz: 11 }, null, paidBdr, 'right');
+        setCell(r, 5, slipCell);
+        r++;
+
+        // ── ROW 5 : blank ─────────────────────────────────────────
+        r++;
+
+        // ── ROW 6 : Table headers (yellow background) ──────────────
+        const headers = ['S.No.', 'Party Name', 'Chq.No', 'Chq.Date', 'Bank Name', 'Amount (₹)'];
+        const hdrAligns = ['center', 'left', 'center', 'center', 'left', 'right'];
+        headers.forEach((h, c) => {
+            setCell(r, c, makeCell(h,
+                { bold: true, sz: 11 },
+                'FFFFFF00',           // yellow bg
+                bdr('thin'),
+                hdrAligns[c]));
+        });
+        r++;
+
+        // ── DATA ROWS ─────────────────────────────────────────────
+        let grandTotal = 0;
+        cheques.forEach((chq, idx) => {
+            const amt = parseFloat((chq['Chq Value (₹)'] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+            grandTotal += amt;
+            const isAlt = idx % 2 === 1;
+            const bg    = isAlt ? 'FFF1F5F9' : null;   // very light grey for odd rows
+
+            const rowData = [
+                { v: idx + 1,                      align: 'center' },
+                { v: chq['Party Name']    || '',    align: 'left'   },
+                { v: chq['Chq Number']    || '',    align: 'center' },
+                { v: chq['Chq Date']      || '',    align: 'center' },
+                { v: chq['Bank Name (Party)'] || '', align: 'left'  },
+                { v: amt,                           align: 'right', numFmt: '#,##0.00' }
+            ];
+
+            rowData.forEach(({ v, align, numFmt }, c) => {
+                const cell = makeCell(v, { sz: 11 }, bg, bdr('thin'), align, numFmt || null);
+                // For numeric amount cell, force type
+                if (numFmt) { cell.t = 'n'; cell.v = v; }
+                // For S.No, force number type
+                if (c === 0) { cell.t = 'n'; }
+                setCell(r, c, cell);
+            });
+            r++;
         });
 
-        // blank before total
-        addRow(['','','','','',''], [0,0,0,0,0,0]);
-        // total
-        addRow(['','','','','TOTAL',total], [0,0,0,0,16,17]);
+        // ── TOTAL ROW ─────────────────────────────────────────────
+        const totalBdr = {
+            top:    { style: 'medium' },
+            bottom: { style: 'thin'   },
+            left:   { style: 'thin'   },
+            right:  { style: 'thin'   }
+        };
 
-        const merges = [
-            { s:{r:0,c:0}, e:{r:0,c:5} },
-            { s:{r:1,c:0}, e:{r:1,c:5} },
-            { s:{r:2,c:0}, e:{r:2,c:1} },
-            { s:{r:2,c:2}, e:{r:2,c:3} },
-            { s:{r:2,c:4}, e:{r:2,c:5} },
-            { s:{r:3,c:0}, e:{r:3,c:4} }
+        // Blank cells A–D
+        for (let c = 0; c < 4; c++) {
+            setCell(r, c, makeCell('', {}, null, totalBdr, 'left'));
+        }
+        // "TOTAL" label in E
+        setCell(r, 4, makeCell('TOTAL',
+            { bold: true, sz: 12 },
+            'FFFFF0CC',   // light amber background
+            totalBdr,
+            'right'));
+        // Total amount in F
+        const totalCell = makeCell(grandTotal,
+            { bold: true, sz: 12, color: { rgb: '005C2D' } },
+            'FFFFF0CC',
+            totalBdr,
+            'right',
+            '#,##0.00');
+        totalCell.t = 'n';
+        totalCell.v = grandTotal;
+        setCell(r, 5, totalCell);
+
+        // ── Worksheet dimensions ───────────────────────────────────
+        ws['!ref'] = XLSX.utils.encode_range({ r: 0, c: 0 }, { r, c: 5 });
+        ws['!merges'] = merges;
+        ws['!cols'] = [
+            { wch: 7  },   // S.No.
+            { wch: 34 },   // Party Name
+            { wch: 16 },   // Chq No
+            { wch: 13 },   // Chq Date
+            { wch: 30 },   // Bank Name
+            { wch: 17 }    // Amount
         ];
+        // Row heights
+        ws['!rows'] = [];
+        ws['!rows'][0] = { hpt: 32 };   // bank title
+        ws['!rows'][1] = { hpt: 24 };   // subtitle
+        ws['!rows'][3] = { hpt: 20 };   // meta
+        ws['!rows'][4] = { hpt: 20 };   // paid-into
+        ws['!rows'][6] = { hpt: 20 };   // header
 
-        const colWidths = [6, 32, 16, 13, 28, 16];
-        const rowHeights = { 0: 36, 1: 28, 2: 20, 3: 20 };
+        // ── Write file ────────────────────────────────────────────
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Deposit Slip');
 
         const safeDate = dateLabel.replace(/\//g, '-');
-        const wb = XLSX.utils.book_new();
-const ws = XLSX.utils.aoa_to_sheet(rows);
-
-// merges
-ws['!merges'] = merges;
-
-// column width
-ws['!cols'] = colWidths.map(w => ({ wch: w }));
-
-XLSX.utils.book_append_sheet(wb, ws, "Deposit Slip");
-
-const safeFileName = 'Deposit_Slip_' + selectedPrintBank + '_' + safeDate + '.xlsx';
-
-XLSX.writeFile(wb, safeFileName);
+        XLSX.writeFile(wb, `Deposit_Slip_${selectedPrintBank}_${safeDate}.xlsx`);
 
     } catch (err) {
         console.error('Excel export error:', err);
@@ -1134,7 +1128,6 @@ document.getElementById('todayDepositsForm').addEventListener('submit', async fu
                 const dd=gbd[date]; let dtv=0;
                 dd.forEach(r=>{ dtv+=parseFloat(r['Chq Value (₹)'].replace(/[^0-9.-]+/g,''))||0; });
                 const did=`dep-${idx}`;
-                // Encode cheques data for print
                 const enc=encodeURIComponent(JSON.stringify(dd));
                 html+=`<div class="summary-card">
                     <div class="summary-header" onclick="toggleDetails('${did}-det',this.querySelector('.summary-toggle-btn'))">
@@ -1191,7 +1184,6 @@ document.getElementById('bankValueForm').addEventListener('submit', async functi
         let reportHtml='';
 
         if (reportType==='full') {
-            // EXCLUDE SECURITY, SORT ALPHABETICALLY BY PARTY NAME
             const display = regData.slice().sort((a,b) => (a['Party Name']||'').localeCompare(b['Party Name']||''));
             lastFilterResults = display;
             const simp=display.map(r=>({'Chq No.':r['Chq Number'],'Chq Date':r['Chq Date'],'Party Name':r['Party Name'],'Party Bank':r['Bank Name (Party)'],'Chq Value (₹)':r['Chq Value (₹)']||'0','Remarks':r['Remarks']||'-','Received Date':r['Received Date']||'-'}));
@@ -1199,7 +1191,6 @@ document.getElementById('bankValueForm').addEventListener('submit', async functi
                 <div class="section-title-bar"><h3>Regular Blank Cheques (Excl. Security) — Alphabetical</h3><span class="count-badge">${display.length} records</span></div>
                 ${createSimpleTableHtml(simp,'Blank Cheques')}
             </div>`;
-
         } else if (reportType==='condensed') {
             const pm={};
             allBlank.forEach(r=>{ const n=formatFieldValue(r['Party Name'],'Unknown'); pm[n]=(pm[n]||0)+1; });
@@ -1207,7 +1198,6 @@ document.getElementById('bankValueForm').addEventListener('submit', async functi
             let lastL='', rows='';
             sp.forEach((p,i)=>{ const fl=p.charAt(0).toUpperCase(); if(fl!==lastL){rows+=`<div class="alpha-divider">${fl}</div>`;lastL=fl;} rows+=`<div class="condensed-party-row" style="animation-delay:${i*0.03}s;"><div class="party-alpha">${fl}</div><div class="party-name-condensed">${p}</div><div class="chq-count-pill">${pm[p]} cheque${pm[p]>1?'s':''}</div></div>`; });
             reportHtml=`<div style="padding:0 10px 10px;"><div class="section-title-bar"><h3>Party-wise Condensed</h3><span class="count-badge">${sp.length} parties</span></div><div class="condensed-party-list">${rows}</div></div>`;
-
         } else if (reportType==='security') {
             if(!secData.length){ reportHtml=`<div class="no-results" style="margin:0 10px;">No security cheques found.</div>`; }
             else {
