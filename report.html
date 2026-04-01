@@ -453,6 +453,7 @@ const BANKS = {
         acNo: '57500001201450',
         ifsc: 'HDFC0XXXXXX',
         branch: 'UPDATE YOUR BRANCH',
+        clientcode: '234990966'
         color: '#003087',
         headerGradient: 'linear-gradient(135deg, #003087 0%, #0050c8 60%, #dc2626 100%)'
     }
@@ -735,6 +736,14 @@ function renderBankerCards() {
                         <div class="banker-detail-value">${bank.branch}</div>
                     </div>
                     <button class="copy-btn" onclick="copyField('${bank.branch}',this)">Copy</button>
+                </div>
+                <div class="banker-detail-row">
+                    <div class="banker-detail-icon" style="background:#fff7ed;">📝</div>
+                    <div class="banker-detail-info">
+                        <div class="banker-detail-label">Client Code</div>
+                        <div class="banker-detail-value">${bank.clientcode}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyField('${bank.clientcode}',this)">Copy</button>
                 </div>
             </div>
         </div>
