@@ -7,7 +7,7 @@
     <link rel="icon" href="https://media.licdn.com/dms/image/v2/D5603AQHMvZTgZ4pbzA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1682685098699?e=2147483647&v=beta&t=87_-l2z-dvgwfndQGnhEdmTpcvEr5Updl0nb71DfHHs" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-js-style/1.2.0/xlsx.bundle.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -251,41 +251,99 @@
 
     const wb = XLSX.utils.book_new();
 
-    // Build data exactly like print layout
-    const wsData = [
-        ["DEPOSIT SLIP"],
-        [],
-        ["Date:", new Date().toLocaleDateString()],
-        [],
-        ["Cheque No", "Party Name", "Bank", "Amount"]
-    ];
+    const ws = XLSX.utils.aoa_to_sheet([]);
 
-    dataRows.forEach(row => {
-        wsData.push([
-            row.chequeNo || "",
-            row.partyName || "",
-            row.bank || "",
-            row.amount || ""
-        ]);
+    let row = 0;
+
+    function setCell(r, c, value, style = {}) {
+        const cellRef = XLSX.utils.encode_cell({ r, c });
+        ws[cellRef] = { v: value, s: style };
+    }
+
+    // ===== TITLE =====
+    setCell(row, 0, "HDFC BANK", {
+        font: { bold: true, sz: 16, color: { rgb: "FF0000" } },
+        alignment: { horizontal: "center" }
+    });
+    ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+    row++;
+
+    // ===== SUBTITLE =====
+    setCell(row, 0, "STATEMENT OF CHEQUES / DRAFTS", {
+        font: { bold: true, underline: true },
+        alignment: { horizontal: "center" }
+    });
+    ws["!merges"].push({ s: { r: 1, c: 0 }, e: { r: 1, c: 5 } });
+    row++;
+
+    row++;
+
+    // ===== HEADER =====
+    const headers = ["S.No", "Party Name", "Chq No", "Chq Date", "Bank Name", "Amount"];
+    headers.forEach((h, i) => {
+        setCell(row, i, h, {
+            font: { bold: true },
+            fill: { fgColor: { rgb: "FFFF00" } },
+            border: {
+                top: { style: "thin" },
+                bottom: { style: "thin" },
+                left: { style: "thin" },
+                right: { style: "thin" }
+            },
+            alignment: { horizontal: "center" }
+        });
+    });
+    row++;
+
+    // ===== DATA =====
+    let total = 0;
+
+    dataRows.forEach((d, i) => {
+        total += Number(d.amount) || 0;
+
+        const values = [
+            i + 1,
+            d.partyName,
+            d.chequeNo,
+            "",
+            d.bank,
+            d.amount
+        ];
+
+        values.forEach((v, c) => {
+            setCell(row, c, v, {
+                border: {
+                    top: { style: "thin" },
+                    bottom: { style: "thin" },
+                    left: { style: "thin" },
+                    right: { style: "thin" }
+                },
+                alignment: { horizontal: c === 5 ? "right" : "left" }
+            });
+        });
+
+        row++;
     });
 
-    // Total row
-    const total = dataRows.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-    wsData.push([]);
-    wsData.push(["", "", "TOTAL", total]);
+    // ===== TOTAL =====
+    setCell(row, 4, "TOTAL", {
+        font: { bold: true },
+        alignment: { horizontal: "right" }
+    });
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    setCell(row, 5, total, {
+        font: { bold: true },
+        alignment: { horizontal: "right" },
+        border: { top: { style: "medium" } }
+    });
 
-    // 🔥 IMPORTANT: Merges for proper layout
-    ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } } // Title merge
-    ];
-
-    // Column width (important for layout)
-    ws['!cols'] = [
-        { wch: 15 },
+    // column widths
+    ws["!cols"] = [
+        { wch: 6 },
         { wch: 30 },
-        { wch: 20 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 25 },
         { wch: 15 }
     ];
 
